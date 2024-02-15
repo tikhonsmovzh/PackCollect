@@ -10,7 +10,6 @@ import static org.firstinspires.ftc.teamcode.Tests.DeviceTest.DeviceType.DISTANC
 import static org.firstinspires.ftc.teamcode.Tests.DeviceTest.DeviceType.GYRO;
 import static org.firstinspires.ftc.teamcode.Tests.DeviceTest.DeviceType.NONE;
 import static org.firstinspires.ftc.teamcode.Tests.DeviceTest.DeviceType.SERVO;
-import static org.woen.team18742.Test.DeviceTest.DeviceType.*;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
