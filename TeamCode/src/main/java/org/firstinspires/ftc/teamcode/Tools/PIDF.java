@@ -70,7 +70,7 @@ public class PIDF {
         if(Math.abs(_integrall) >= _limitI)
             _integrall = signum(_integrall) * _limitI;
 
-        double u = error * _pCoef + (_integrall * _iCoef * _time.milliseconds()) + (error - _errOld) * (_dCoef / _time.milliseconds()) + -_gCof;
+        double u = error * _pCoef + (_integrall * _iCoef * _time.seconds()) + (error - _errOld) * (_dCoef / _time.seconds()) + -_gCof;
 
         Err = error;
 

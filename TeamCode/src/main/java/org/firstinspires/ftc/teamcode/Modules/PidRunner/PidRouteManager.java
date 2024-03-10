@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.Manager.Module;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Module
@@ -22,6 +23,8 @@ public class PidRouteManager implements IRobotModule {
     @Override
     public void Init(BaseCollector collector) {
         _automatic = collector.GetModule(PidAutomatic.class);
+
+        _route = new ArrayList<>();
     }
 
     private void Wait(double sleep) {
@@ -32,12 +35,13 @@ public class PidRouteManager implements IRobotModule {
 
     @Override
     public void LastUpdate() {
-        if (_automatic.isMovedEnd()&& _timer.milliseconds() > _waitTime) {
+        if (_automatic.isMovedEnd() && _timer.milliseconds() > _waitTime) {
             if (_currentRouteAction < _route.size()) {
                 _route.get(_currentRouteAction).run();
 
                 _currentRouteAction++;
-            };
+            }
+            ;
         }
     }
 }
