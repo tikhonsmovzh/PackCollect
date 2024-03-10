@@ -8,10 +8,11 @@ import org.firstinspires.ftc.teamcode.Modules.Gyroscope;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.Manager.Module;
 import org.firstinspires.ftc.teamcode.Modules.Odometry;
+import org.firstinspires.ftc.teamcode.Tools.Units.Angle.Angle;
 import org.firstinspires.ftc.teamcode.Tools.Battery;
 import org.firstinspires.ftc.teamcode.Tools.Configs.Configs;
-import org.firstinspires.ftc.teamcode.Tools.PIDF;
-import org.firstinspires.ftc.teamcode.Tools.Vector2;
+import org.firstinspires.ftc.teamcode.Tools.PID.PIDF;
+import org.firstinspires.ftc.teamcode.Tools.Units.Vector2;
 
 
 @Module
@@ -19,6 +20,7 @@ public class PidAutomatic implements IRobotModule {
     private Odometry _odometry;
     private Gyroscope _gyro;
     private Drivetrain _driverTrain;
+
     @Override
     public void Init(BaseCollector collector) {
         _odometry = collector.GetModule(Odometry.class);
@@ -26,71 +28,49 @@ public class PidAutomatic implements IRobotModule {
         _driverTrain = collector.GetModule(Drivetrain.class);
     }
 
-    public void SetSpeed(double speed){
+    public void SetSpeed(double speed) {
         _PIDFTurn.SrtLimitU(speed);
         _PIDFForward.SrtLimitU(speed);
-        _PIDFSide.SrtLimitU(speed);
     }
 
     private final PIDF _PIDFForward = new PIDF(Configs.AutomaticForwardPid.PidForwardP, Configs.AutomaticForwardPid.PidForwardI, Configs.AutomaticForwardPid.PidForwardD, Configs.DriveTrainWheels.speed, 1);
-    private final PIDF _PIDFSide = new PIDF(Configs.AutomaticSidePid.PidSideP, Configs.AutomaticSidePid.PidSideI, Configs.AutomaticSidePid.PidSideD, Configs.DriveTrainWheels.speed, 1);
     private final PIDF _PIDFTurn = new PIDF(Configs.AutomaticRotatePid.PidRotateP, Configs.AutomaticRotatePid.PidRotateI, Configs.AutomaticRotatePid.PidRotateD, Configs.DriveTrainWheels.speed, 1);
 
-    public void PIDMove(Vector2 moved) {
-        PIDMoveToPoint(Vector2.Plus(moved, _targetPosition));
+    public void Move(Vector2 moved) {
+        MoveToPoint(Vector2.Plus(moved, _targetPosition));
     }
 
-    public void PIDMove(Vector2 moved, double rotation){
-        PIDMoveToPoint(Vector2.Plus(moved, _targetPosition));
-        TurnGyro(rotation);
-    }
-
-    public void PIDMoveToPoint(Vector2 moved, double rotate){
-        PIDMoveToPoint(moved);
-        TurnGyro(rotate);
-    }
-
-    public void PIDMoveToPoint(Vector2 moved){
+    public void MoveToPoint(Vector2 moved) {
         _targetPosition = moved;
 
         _PIDFForward.Reset();
-        _PIDFSide.Reset();
 
-        _PIDFForward.Update(_targetPosition.X - _odometry.Position.X);
-        _PIDFSide.Update(_targetPosition.Y - _odometry.Position.Y);
+        _PIDFForward.Update(Vector2.Minus(_targetPosition, _odometry.Position).Abs());
     }
 
-    public void TurnGyro(double degrees) {
-        _PIDFTurn.Reset();
-
-        _turnTarget = degrees;
-
-        _PIDFTurn.Update(Gyroscope.ChopAngle(_gyro.GetRadians() - _turnTarget));
-    }
-
-    private double _turnTarget = 0;
     private Vector2 _targetPosition = new Vector2();
 
     public boolean isMovedEnd() {
-        return Math.abs(_PIDFForward.Err) < 10d && Math.abs(_PIDFSide.Err) < 10d && Math.abs(_PIDFTurn.Err) < PI / 10;
+        return Math.abs(_PIDFForward.Err) < 10d && Math.abs(_PIDFTurn.Err) < PI / 10;
     }
 
     @Override
     public void Update() {
         _PIDFForward.UpdateCoefs(Configs.AutomaticForwardPid.PidForwardP, Configs.AutomaticForwardPid.PidForwardI, Configs.AutomaticForwardPid.PidForwardD);
-        _PIDFSide.UpdateCoefs(Configs.AutomaticSidePid.PidSideP, Configs.AutomaticSidePid.PidSideI, Configs.AutomaticSidePid.PidSideD);
         _PIDFTurn.UpdateCoefs(Configs.AutomaticRotatePid.PidRotateP, Configs.AutomaticRotatePid.PidRotateI, Configs.AutomaticRotatePid.PidRotateD);
 
-        if(Configs.GeneralSettings.IsAutonomEnable) {
-            _driverTrain.SetCMSpeed(
-                    new Vector2(_PIDFForward.Update(_targetPosition.X - _odometry.Position.X) / Battery.ChargeDelta, _PIDFSide.Update(_targetPosition.Y - _odometry.Position.Y) / Battery.ChargeDelta).Turn(-_gyro.GetRadians()),
-                    _PIDFTurn.Update(Gyroscope.ChopAngle(_gyro.GetRadians() - _turnTarget)) / Battery.ChargeDelta);
+        if (Configs.GeneralSettings.IsAutonomEnable) {
+            Vector2 dif = Vector2.Minus(_targetPosition, _odometry.Position);
+            double len = dif.Abs();
+
+            _driverTrain.Drive(
+                    Math.abs(_PIDFTurn.Err) < Configs.Automatic.TurnSensitivity || (len < Configs.Automatic.LengthSensitivity && Math.abs(_PIDFTurn.Err) < Configs.Automatic.TurnSensitivity + PI) ? _PIDFForward.Update(len) / Battery.ChargeDelta : 0,
+                    _PIDFTurn.Update(Angle.ChopAngle(_gyro.GetAngle().getRadian() - Math.atan2(dif.Y, dif.X))) / Battery.ChargeDelta);
         }
     }
 
     @Override
-    public void Start(){
-        _PIDFSide.Start();
+    public void Start() {
         _PIDFForward.Start();
         _PIDFTurn.Start();
     }

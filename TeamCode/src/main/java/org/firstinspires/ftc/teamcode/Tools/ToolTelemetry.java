@@ -9,6 +9,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Tools.Configs.Configs;
+import org.firstinspires.ftc.teamcode.Tools.Units.Vector2;
 
 public class ToolTelemetry {
     private static Telemetry _telemetry;

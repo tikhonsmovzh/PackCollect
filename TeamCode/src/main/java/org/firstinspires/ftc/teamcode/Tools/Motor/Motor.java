@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Tools.Battery;
 import org.firstinspires.ftc.teamcode.Tools.Configs.Configs;
-import org.firstinspires.ftc.teamcode.Tools.PIDF;
+import org.firstinspires.ftc.teamcode.Tools.PID.PIDF;
 
 
 public class Motor {

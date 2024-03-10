@@ -17,75 +17,46 @@ import java.util.List;
 public class Devices {
     private static HardwareMap _hardwareDevices;
 
-    public static DcMotorEx LeftForwardDrive, LeftBackDrive, RightForwardDrive, RightBackDrive;
+    public static DcMotorEx LeftDrive, RightDrive;
 
     public static DcMotorEx OdometerXLeft, OdometerY, OdometerXRight;
 
-    public static DcMotorEx HookMotor;
-
-    public static DcMotorEx LiftMotor, LightingMotor;
-
-    public static DcMotorEx BrushMotor;
+    public static DcMotorEx BrushMotor, SeparatorMotor;
 
     public static WebcamName Camera;
 
-    public static DigitalChannel EndSwitchUp, EndSwitchDown;
-
     public static IMU IMU;
 
-    public static AnalogInput PixelSensor;
-    public static Servo Gripper, Clamp, Servopere, ServoPlane, HookServoLeft, HookServoRight, stackLift;
-    public static ServoImplEx leftStackBrush, rightStackBrush;
+    public static AnalogInput PuckSensor;
+    public static Servo Clamp;
 
     public static List<LynxModule> Hubs;
     public static VoltageSensor VoltageSensor;
-    public static List<ServoImplEx> Servs;
 
     public static void Init(HardwareMap map){
         if(_hardwareDevices != null)
             return;
 
-        LeftForwardDrive = map.get(DcMotorEx.class, "leftFrontMotor");
-        RightForwardDrive = map.get(DcMotorEx.class, "rightFrontMotor");
-        LeftBackDrive = map.get(DcMotorEx.class, "leftBackMotor");
-        RightBackDrive = map.get(DcMotorEx.class, "rightBackMotor");
-
-        Servs = map.getAll(ServoImplEx.class);
-
-        LiftMotor = map.get(DcMotorEx.class, "liftMotor");
+        LeftDrive = map.get(DcMotorEx.class, "leftDrive");
+        RightDrive = map.get(DcMotorEx.class, "rightDrive");
 
         BrushMotor = map.get(DcMotorEx.class, "odometerXRightBrush");
         OdometerXLeft = map.get(DcMotorEx.class, "odometerXLeft");
         OdometerY = map.get(DcMotorEx.class, "odometrYLED");
         OdometerXRight = map.get(DcMotorEx.class, "odometerXRightBrush");
 
+        SeparatorMotor = map.get(DcMotorEx.class, "separatorMotor");
+
         Camera = map.get(WebcamName.class, "Webcam 1");
-
-        EndSwitchUp = map.get(DigitalChannel.class, "endSwitchUp");
-        EndSwitchDown = map.get(DigitalChannel.class, "endSwitchDown");
-
-        ServoPlane = map.get(Servo.class, "servoPlane");
 
         IMU = map.get(IMU.class, "imu");
 
-        PixelSensor = map.get(AnalogInput.class, "pixelSensor");
-        Gripper = map.get(Servo.class, "gripper");
+        PuckSensor = map.get(AnalogInput.class, "pixelSensor");
         Clamp = map.get(Servo.class, "clamp");
-        Servopere = map.get(Servo.class, "turner");
 
-        leftStackBrush = map.get(ServoImplEx.class,"leftStackBrush");
-        rightStackBrush = map.get(ServoImplEx.class,"rightStackBrush");
-
-        stackLift = map.get(Servo.class,"stackLift");
-
-        HookServoLeft = map.get(Servo.class, "leftHook");
-        HookServoRight = map.get(Servo.class, "rightHook");
         Hubs = map.getAll(LynxModule.class);
 
         VoltageSensor = map.get(VoltageSensor.class, "Control Hub");
-
-        LightingMotor = map.get(DcMotorEx.class, "odometrYLED");;
-        HookMotor = map.get(DcMotorEx.class, "odometerXLeft");
 
         _hardwareDevices = map;
     }

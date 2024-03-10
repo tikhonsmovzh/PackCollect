@@ -23,15 +23,17 @@ public class Timer {
     }
 
     public void Update(){
-        if(_isActive && _timer.milliseconds() > _time){
-            _isActive = false;
-
-            _action.run();
+        if(_isActive && _timer.seconds() > _time){
+            StopAndRun();
         }
     }
 
     public void Stop(){
         _isActive = false;
+    }
+    public void StopAndRun(){
+        Stop();
+        _action.run();
     }
 
     public boolean IsActive(){

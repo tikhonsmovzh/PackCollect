@@ -14,16 +14,16 @@ import org.firstinspires.ftc.vision.VisionProcessor;
 @Module
 public class VisionPortalHandler implements IRobotModule {
     private VisionPortal _visualPortal;
-    private CameraStreamSource _processor;
+    //private CameraStreamSource _processor;
 
     @Override
     public void Init(BaseCollector collector){
-        _processor = new PuckDetections();
+      //  _processor = new PuckDetections();
 
-        _visualPortal = new VisionPortal.Builder().addProcessor((VisionProcessor) _processor).setCamera(Devices.Camera).build();
+        _visualPortal = new VisionPortal.Builder().setCamera(Devices.Camera).build();//.addProcessor((VisionProcessor) _processor).build();
 
-        if(Configs.GeneralSettings.TelemetryOn)
-            FtcDashboard.getInstance().startCameraStream(_processor, 10);
+        //if(Configs.GeneralSettings.TelemetryOn)
+        //    FtcDashboard.getInstance().startCameraStream(_processor, 10);
     }
 
     @Override

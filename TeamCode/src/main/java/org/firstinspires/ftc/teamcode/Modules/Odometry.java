@@ -6,22 +6,24 @@ import static java.lang.Math.sin;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
-import org.firstinspires.ftc.teamcode.Modules.Gyroscope;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.Manager.Module;
+import org.firstinspires.ftc.teamcode.Tools.Units.Angle.Angle;
+import org.firstinspires.ftc.teamcode.Tools.Units.Angle.RadianAngle;
 import org.firstinspires.ftc.teamcode.Tools.Configs.Configs;
 import org.firstinspires.ftc.teamcode.Tools.Devices;
 import org.firstinspires.ftc.teamcode.Tools.Motor.EncoderControl;
-import org.firstinspires.ftc.teamcode.Tools.Vector2;
+import org.firstinspires.ftc.teamcode.Tools.Units.Vector2;
 
 
 @Module
 public class Odometry implements IRobotModule {
     private EncoderControl _odometerY, _odometerXLeft, _odometerXRight;
 
-    private double _oldRotate = 0, _oldOdometrXLeft, _oldOdometrXRight, _oldOdometrY;
-    public Vector2 Position = new Vector2(), ShiftPosition = new Vector2(), Speed = new Vector2();
+    private double _oldOdometrXLeft, _oldOdometrXRight, _oldOdometrY;
+    public Vector2 Position = new Vector2(), ShiftPosition = new Vector2();
     private Gyroscope _gyro;
+    private Angle _oldRotate = new RadianAngle(0);
 
     @Override
     public void Init(BaseCollector collector) {
@@ -84,23 +86,19 @@ public class Odometry implements IRobotModule {
 
         double deltaX = (odometrXLeft - _oldOdometrXLeft + odometrXRight - _oldOdometrXRight) / 2;
 
-        double deltaY = (odometrY - _oldOdometrY) - Configs.Odometry.RadiusOdometrY * Gyroscope.ChopAngle(_gyro.GetRadians() - _oldRotate);
-
-        Speed.X = (odometrSpeedXLeft + odometrSpeedXRight) / 2;
-
-        Speed.Y = odometrSpeedY - Configs.Odometry.RadiusOdometrY * _gyro.GetSpeedRadians();
+        double deltaY = (odometrY - _oldOdometrY) - Configs.Odometry.RadiusOdometrY * Angle.Minus(_gyro.GetAngle(), _oldRotate).getRadian();
 
         _oldOdometrXLeft = odometrXLeft;
         _oldOdometrXRight = odometrXRight;
         _oldOdometrY = odometrY;
 
-        _oldRotate = _gyro.GetRadians();
+        _oldRotate = _gyro.GetAngle();
 
         ShiftPosition = new Vector2(deltaX *
-                cos(-_gyro.GetRadians()) +
-                deltaY * sin(-_gyro.GetRadians()),
-                -deltaX * sin(-_gyro.GetRadians()) +
-                        deltaY * cos(-_gyro.GetRadians()));
+                cos(-_gyro.GetAngle().getRadian()) +
+                deltaY * sin(-_gyro.GetAngle().getRadian()),
+                -deltaX * sin(-_gyro.GetAngle().getRadian()) +
+                        deltaY * cos(-_gyro.GetAngle().getRadian()));
 
         Position = Vector2.Plus(ShiftPosition, Position);
     }
