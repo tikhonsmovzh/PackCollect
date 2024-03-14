@@ -3,7 +3,10 @@ package org.firstinspires.ftc.teamcode.Tools.Motor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class VelocityControl {
+import org.firstinspires.ftc.teamcode.Tools.UpdateHandler.IHandlered;
+import org.firstinspires.ftc.teamcode.Tools.UpdateHandler.UpdateHandler;
+
+public class VelocityControl implements IHandlered {
     private final DcMotorEx _encoder;
     private final ElapsedTime _deltaTime = new ElapsedTime();
 
@@ -15,6 +18,7 @@ public class VelocityControl {
 
     public VelocityControl(DcMotorEx encoder) {
         _encoder = encoder;
+        UpdateHandler.AddHandlered(this);
     }
 
 

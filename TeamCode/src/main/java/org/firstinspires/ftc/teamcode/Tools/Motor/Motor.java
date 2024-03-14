@@ -7,9 +7,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.Tools.Battery;
 import org.firstinspires.ftc.teamcode.Tools.Configs.Configs;
 import org.firstinspires.ftc.teamcode.Tools.PID.PIDF;
+import org.firstinspires.ftc.teamcode.Tools.UpdateHandler.IHandlered;
+import org.firstinspires.ftc.teamcode.Tools.UpdateHandler.UpdateHandler;
 
 
-public class Motor {
+public class Motor implements IHandlered {
     public final DcMotorEx Motor;
 
     private PIDF _velocityPid;
@@ -35,14 +37,9 @@ public class Motor {
 
         _velocityPid = new PIDF(Configs.Motors.DefultP, Configs.Motors.DefultI, Configs.Motors.DefultD, 0, Configs.Motors.DefultF, 50, 0);
 
-        MotorsHandler.AddMotor(this);
+        UpdateHandler.AddHandlered(this);
 
         _velControl = new VelocityControl(motor);
-    }
-
-    public void Start(){
-        _velocityPid.Start();
-        _velControl.Start();
     }
 
     public void setDirection(DcMotorSimple.Direction dir){
@@ -61,9 +58,8 @@ public class Motor {
         return Motor.getCurrentPosition();
     }
 
+    @Override
     public void Update(){
-        _velControl.Update();
-
         if(!_isCustomPid)
             _velocityPid.UpdateCoefs(Configs.Motors.DefultP, Configs.Motors.DefultI, Configs.Motors.DefultD, 0, Configs.Motors.DefultF);
 
@@ -72,16 +68,14 @@ public class Motor {
         Motor.setPower(pidSpeed / Battery.ChargeDelta);
     }
 
-    private double _targetEncoderSpeed = 0;//, _targetVoltageSpeed = 0;
+    private double _targetEncoderSpeed = 0;
 
     public void setPower(double speed){
         setEncoderPower(speed * _encoderType.Ticks);
-       // _targetVoltageSpeed = Configs.Battery.CorrectCharge * speed;
     }
 
     public void setEncoderPower(double speed){
         _targetEncoderSpeed = speed;
-        //_targetVoltageSpeed = Configs.Battery.CorrectCharge * (speed / _encoderType.Ticks);
     }
     
     public VelocityControl GetVelocityController(){

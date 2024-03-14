@@ -2,7 +2,10 @@ package org.firstinspires.ftc.teamcode.Tools.Motor;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-public class EncoderControl {
+import org.firstinspires.ftc.teamcode.Tools.UpdateHandler.IHandlered;
+import org.firstinspires.ftc.teamcode.Tools.UpdateHandler.UpdateHandler;
+
+public class EncoderControl implements IHandlered {
     private final DcMotorEx _encoder;
     private final VelocityControl _velControl;
     private final double _ticks, _diameter;
@@ -10,6 +13,7 @@ public class EncoderControl {
 
     public EncoderControl(DcMotorEx encoder, ReductorType type, double diameter){
         this(encoder, type.Ticks, diameter);
+        UpdateHandler.AddHandlered(this);
     }
 
     public EncoderControl(DcMotorEx encoder, double ticksInEncoder, double diameter){
@@ -29,12 +33,8 @@ public class EncoderControl {
         return _velControl.GetVelocity() / _ticks * Math.PI * _diameter;
     }
 
-    public void Start(){
-        _velControl.Start();
-    }
-
+    @Override
     public void Update(){
-        _velControl.Update();
         _pos = _encoder.getCurrentPosition() - _startPos;
     }
 

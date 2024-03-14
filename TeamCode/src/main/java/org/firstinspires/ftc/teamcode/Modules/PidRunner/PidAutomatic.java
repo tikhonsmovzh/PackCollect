@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Modules.Gyroscope;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.Manager.Module;
 import org.firstinspires.ftc.teamcode.Modules.Odometry;
-import org.firstinspires.ftc.teamcode.Tools.Units.Angle.Angle;
+import org.firstinspires.ftc.teamcode.Tools.Units.Angle;
 import org.firstinspires.ftc.teamcode.Tools.Battery;
 import org.firstinspires.ftc.teamcode.Tools.Configs.Configs;
 import org.firstinspires.ftc.teamcode.Tools.PID.PIDF;

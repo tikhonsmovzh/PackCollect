@@ -9,8 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.Manager.Module;
-import org.firstinspires.ftc.teamcode.Tools.Units.Angle.Angle;
-import org.firstinspires.ftc.teamcode.Tools.Units.Angle.RadianAngle;
+import org.firstinspires.ftc.teamcode.Tools.Units.Angle;
 import org.firstinspires.ftc.teamcode.Tools.Devices;
 import org.firstinspires.ftc.teamcode.Tools.ToolTelemetry;
 
@@ -37,12 +36,12 @@ public class Gyroscope implements IRobotModule {
 
     @Override
     public void Update() {
-        _rotate = Angle.Minus(new RadianAngle(_imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS)), _startRotateRadian);
+        _rotate = Angle.Minus(Angle.ofRadian(_imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS)), _startRotateRadian);
         
         ToolTelemetry.AddLine("rotate = " + _rotate.getRadian());
     }
 
     public void Reset() {
-        _startRotateRadian = new RadianAngle(_imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+        _startRotateRadian = Angle.ofRadian(_imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
     }
 }

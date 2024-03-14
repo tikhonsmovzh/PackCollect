@@ -12,11 +12,6 @@ public class AutonomCollector extends BaseCollector {
     public AutonomCollector(LinearOpMode robot) {
         super(robot);
 
-        if(_annotatedClass == null)
-            _annotatedClass = GetAnnotatedClasses(Module.class);
-
-        AddAdditionModules(_annotatedClass);
-
-        Init();
+        InitAll();
     }
 }

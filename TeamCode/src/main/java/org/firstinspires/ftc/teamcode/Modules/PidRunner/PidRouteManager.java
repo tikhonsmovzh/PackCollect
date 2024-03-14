@@ -34,7 +34,7 @@ public class PidRouteManager implements IRobotModule {
 
 
     @Override
-    public void LastUpdate() {
+    public void LateUpdate() {
         if (_automatic.isMovedEnd() && _timer.milliseconds() > _waitTime) {
             if (_currentRouteAction < _route.size()) {
                 _route.get(_currentRouteAction).run();

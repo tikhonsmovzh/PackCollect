@@ -8,8 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.Manager.Module;
-import org.firstinspires.ftc.teamcode.Tools.Units.Angle.Angle;
-import org.firstinspires.ftc.teamcode.Tools.Units.Angle.RadianAngle;
+import org.firstinspires.ftc.teamcode.Tools.Units.Angle;
 import org.firstinspires.ftc.teamcode.Tools.Configs.Configs;
 import org.firstinspires.ftc.teamcode.Tools.Devices;
 import org.firstinspires.ftc.teamcode.Tools.Motor.EncoderControl;
@@ -23,7 +22,7 @@ public class Odometry implements IRobotModule {
     private double _oldOdometrXLeft, _oldOdometrXRight, _oldOdometrY;
     public Vector2 Position = new Vector2(), ShiftPosition = new Vector2();
     private Gyroscope _gyro;
-    private Angle _oldRotate = new RadianAngle(0);
+    private Angle _oldRotate = Angle.ofRadian(0);
 
     @Override
     public void Init(BaseCollector collector) {

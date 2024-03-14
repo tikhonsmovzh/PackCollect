@@ -4,7 +4,10 @@ import static java.lang.Math.signum;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class PIDF {
+import org.firstinspires.ftc.teamcode.Tools.UpdateHandler.IHandlered;
+import org.firstinspires.ftc.teamcode.Tools.UpdateHandler.UpdateHandler;
+
+public class PIDF implements IHandlered {
     private double _pCoef;
     private double _dCoef;
     private double _iCoef;
@@ -37,7 +40,7 @@ public class PIDF {
 
         _limitU = 1;
 
-        PIDHandler.AddPid(this);
+        UpdateHandler.AddHandlered(this);
     }
 
     public void Reset() {
@@ -58,6 +61,7 @@ public class PIDF {
         _fCof = fCof;
     }
 
+    @Override
     public void Start(){
         _time.reset();
     }
