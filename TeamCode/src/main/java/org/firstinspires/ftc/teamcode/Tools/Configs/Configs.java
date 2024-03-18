@@ -1,8 +1,35 @@
 package org.firstinspires.ftc.teamcode.Tools.Configs;
 
+import android.content.Context;
+
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 
+import org.firstinspires.ftc.ftccommon.external.OnCreate;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.TypeVariable;
+
 public class Configs {
+    @OnCreate
+    public static void create(Context context) {
+
+
+        for (Class<?> i : Configs.class.getClasses())
+            for(Field j : i.getFields())
+                if(Modifier.isStatic(j.getModifiers())){
+                    //DashboardValue value = (DashboardValue) (Object) j;
+
+                    //value.DataInit(i.getName() + j.getName());
+                    //FtcDashboard.getInstance().addConfigVariable(i.getName(), j.getName(), value.GetProvider());
+                }
+    }
+
+    public static class Test{
+        public static DashboardValue Test = new DashboardValue<Double>(0d);
+    }
+
     @Config
     public static class GeneralSettings {
         public static boolean IsAutonomEnable = true;
