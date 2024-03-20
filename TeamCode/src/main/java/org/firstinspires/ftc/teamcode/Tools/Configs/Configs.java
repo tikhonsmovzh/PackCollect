@@ -81,7 +81,7 @@ public class Configs {
     public static class Intake{
         public static double SeparatorP = 1, SeparatorI = 0, SeparatorD = 0;
 
-        public static double Shift = 120;
+        public static double Shift = 240;
 
         public static double RedVoltage = 0.2, BlueVoltage = 0.6, PuckDetectSensitivity = 0.1;
         public static double PuckDetectDelaySec = 0.5;
