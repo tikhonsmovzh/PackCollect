@@ -12,24 +12,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.TypeVariable;
 
 public class Configs {
-    @OnCreate
-    public static void create(Context context) {
-
-
-        for (Class<?> i : Configs.class.getClasses())
-            for(Field j : i.getFields())
-                if(Modifier.isStatic(j.getModifiers())){
-                    //DashboardValue value = (DashboardValue) (Object) j;
-
-                    //value.DataInit(i.getName() + j.getName());
-                    //FtcDashboard.getInstance().addConfigVariable(i.getName(), j.getName(), value.GetProvider());
-                }
-    }
-
-    public static class Test{
-        public static DashboardValue Test = new DashboardValue<Double>(0d);
-    }
-
     @Config
     public static class GeneralSettings {
         public static boolean IsAutonomEnable = true;
@@ -97,5 +79,24 @@ public class Configs {
     public static class Automatic{
         public static double TurnSensitivity = Math.PI / 3;
         public static double LengthSensitivity = 5;
+    }
+
+    @Config
+    public static class Camera{
+        public static int ksize = 22;
+
+        public static double hRedDown = 4;
+        public static double cRedDown = 127.7;
+        public static double vRedDowm = 154.4;
+        public static double hRedUp = 30;
+        public static double cRedUp = 255;
+        public static double vRedUp = 255;
+
+        public static double hBlueDown = 95;
+        public static double cBlueDown = 100;
+        public static double vBlueDowm = 0;
+        public static double hBlueUp = 255;
+        public static double cBlueUp = 255;
+        public static double vBlueUp = 255;
     }
 }

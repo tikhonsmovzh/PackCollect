@@ -7,26 +7,22 @@ import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
+import org.firstinspires.ftc.teamcode.Tools.Configs.Configs;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 
+import static org.opencv.core.Core.inRange;
+import static org.opencv.core.Core.sumElems;
 import static org.opencv.imgproc.Imgproc.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class PuckDetections implements VisionProcessor, CameraStreamSource {
     public AtomicReference<Bitmap> LastFrame = new AtomicReference<>(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565));
+    public AtomicReference<Double> RedCount = new AtomicReference<>(0d), BlueCount = new AtomicReference<>(0d);
 
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
@@ -35,38 +31,25 @@ public class PuckDetections implements VisionProcessor, CameraStreamSource {
 
     @Override
     public Object processFrame(Mat frm, long captureTimeNanos) {
-        try {
-            Mat frame = frm.clone();
+        Mat frame = frm.clone();
 
-            blur(frame, frame, new Size(10, 10));
+        blur(frame, frame, new Size(10, 10));
 
-            MatOfPoint2f matOfPoint2f = new MatOfPoint2f();
-            MatOfPoint2f approxCurve = new MatOfPoint2f();
+        Mat blueFrame = frame.clone();
 
-            List<MatOfPoint> contours = new ArrayList<>();
+        inRange(blueFrame, new Scalar(Configs.Camera.hBlueDown, Configs.Camera.cBlueDown, Configs.Camera.vBlueDowm), new Scalar(Configs.Camera.hBlueUp, Configs.Camera.cBlueUp, Configs.Camera.vBlueUp), blueFrame);
 
-            findContours(frame, contours, new Mat(), 100, 300);
+        BlueCount.set(sumElems(blueFrame).val[0]);
 
-            for (MatOfPoint i : contours) {
-                matOfPoint2f.fromList(i.toList());
-                approxPolyDP(matOfPoint2f, approxCurve, arcLength(matOfPoint2f, true) * 0.02, true);
-                long total = approxCurve.total();
-                if (total >= 4 && total <= 6) {
-                    boolean isRect = total == 4;
+        Mat redFrame = frame.clone();
 
-                    if (isRect) {
-                        Imgproc.rectangle(frame, new Rect(new Point(0, 0), new Point(50, 50)), new Scalar(100, 100, 100));
-                    }
-                }
-            }
+        inRange(redFrame, new Scalar(Configs.Camera.hRedDown, Configs.Camera.cRedDown, Configs.Camera.vRedDowm), new Scalar(Configs.Camera.hRedUp, Configs.Camera.cRedUp, Configs.Camera.vRedUp), redFrame);
 
-            Bitmap b = Bitmap.createBitmap(frame.width(), frame.height(), Bitmap.Config.RGB_565);//выводим картинку в дашборд
-            Utils.matToBitmap(frame, b);
-            LastFrame.set(b);
-        }
-        catch (Exception e){
+        RedCount.set(sumElems(redFrame).val[0]);
 
-        }
+        Bitmap b = Bitmap.createBitmap(frame.width(), frame.height(), Bitmap.Config.RGB_565);//выводим картинку в дашборд
+        Utils.matToBitmap(frame, b);
+        LastFrame.set(b);
 
         return frm;
     }
