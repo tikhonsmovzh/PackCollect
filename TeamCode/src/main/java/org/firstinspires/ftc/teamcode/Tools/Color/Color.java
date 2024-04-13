@@ -1,6 +1,9 @@
-package org.firstinspires.ftc.teamcode.Tools;
+package org.firstinspires.ftc.teamcode.Tools.Color;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import org.firstinspires.ftc.teamcode.Tools.Configs.Configs;
 
 public class Color {
     public static Color RED = new Color(255, 0, 0);
@@ -47,5 +50,32 @@ public class Color {
     @Override
     public Color clone() {
         return new Color(R, G, B);
+    }
+
+    public static Color ofBytes(byte[] buf){
+        if(buf.length != 6)
+            throw new RuntimeException("error get color of " + buf.length + " bytes, request 6");
+
+        return new Color(getInt(buf, 0), getInt(buf, 2), getInt(buf, 4));
+    }
+
+    public static int getInt(byte[] arr, int off) {
+        return arr[off]<<8 &0xFF00 | arr[off+1]&0xFF;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return equals(obj, 0);
+    }
+
+    public boolean equals(@Nullable Object obj, int sensitivity) {
+        if(!(obj instanceof Color))
+            return false;
+
+        Color color = (Color) obj;
+
+        return Math.abs(color.R - Configs.Intake.RRedPuck) < sensitivity &&
+                Math.abs(color.G - Configs.Intake.GRedPuck) < sensitivity &&
+                Math.abs(color.B - Configs.Intake.BRedPuck) < sensitivity;
     }
 }

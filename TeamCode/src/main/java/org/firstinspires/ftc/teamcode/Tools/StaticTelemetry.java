@@ -8,12 +8,11 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Tools.Color.Color;
 import org.firstinspires.ftc.teamcode.Tools.Configs.Configs;
 import org.firstinspires.ftc.teamcode.Tools.Units.Vector2;
 
-import java.util.List;
-
-public class ToolTelemetry {
+public class StaticTelemetry {
     private static Telemetry _telemetry;
 
     public static void SetTelemetry(Telemetry telemetry) {

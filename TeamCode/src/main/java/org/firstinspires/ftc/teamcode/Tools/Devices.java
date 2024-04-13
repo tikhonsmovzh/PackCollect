@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode.Tools;
 
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -21,17 +19,18 @@ public class Devices {
 
     public static DcMotorEx OdometerXLeft, OdometerY, OdometerXRight;
 
-    public static DcMotorEx BrushMotor, SeparatorMotor;
+    public static DcMotorEx BrushesMotor, SeparatorMotor;
 
     public static WebcamName Camera;
 
     public static IMU IMU;
 
-    public static AnalogInput PuckSensor;
+    public static I2cDevice PuckSensor, FloorSensorLeft, FloorSensorRight;
     public static Servo Clamp;
 
     public static List<LynxModule> Hubs;
     public static VoltageSensor VoltageSensor;
+
 
     public static void Init(HardwareMap map){
         if(_hardwareDevices != null)
@@ -40,7 +39,7 @@ public class Devices {
         LeftDrive = map.get(DcMotorEx.class, "leftDrive");
         RightDrive = map.get(DcMotorEx.class, "rightDrive");
 
-        BrushMotor = map.get(DcMotorEx.class, "odometerXRightBrush");
+        BrushesMotor = map.get(DcMotorEx.class, "odometerXRightBrush");
         OdometerXLeft = map.get(DcMotorEx.class, "odometerXLeft");
         OdometerY = map.get(DcMotorEx.class, "odometrYLED");
         OdometerXRight = map.get(DcMotorEx.class, "odometerXRightBrush");
@@ -51,7 +50,10 @@ public class Devices {
 
         IMU = map.get(IMU.class, "imu");
 
-        PuckSensor = map.get(AnalogInput.class, "pixelSensor");
+        PuckSensor = map.get(I2cDevice.class, "puckSensor");
+        FloorSensorLeft = map.get(I2cDevice.class, "floorSensorLeft");
+        FloorSensorRight = map.get(I2cDevice.class, "floorSensorRight");
+
         Clamp = map.get(Servo.class, "clamp");
 
         Hubs = map.getAll(LynxModule.class);

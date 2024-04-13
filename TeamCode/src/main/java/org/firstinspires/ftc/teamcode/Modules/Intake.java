@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
-
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -12,35 +10,54 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.Manager.Module;
+import org.firstinspires.ftc.teamcode.Tools.Color.Color;
+import org.firstinspires.ftc.teamcode.Tools.Color.ColorSensor;
 import org.firstinspires.ftc.teamcode.Tools.Configs.Configs;
 import org.firstinspires.ftc.teamcode.Tools.Devices;
+import org.firstinspires.ftc.teamcode.Tools.Events.Event;
 import org.firstinspires.ftc.teamcode.Tools.GameData;
 import org.firstinspires.ftc.teamcode.Tools.PID.PIDF;
-import org.firstinspires.ftc.teamcode.Tools.Units.Vector2;
+import org.firstinspires.ftc.teamcode.Tools.Timers.Timer;
 
 @Module
 public class Intake implements IRobotModule {
     private DcMotorEx _separatorMotor;
-    private AnalogInput _puckSensor;
+    private ColorSensor _puckSensor, _floorSensorLeft, _floorSensorRight;
     private double _targetSeparatorPosition;
     private final ElapsedTime _puckDetectDelay = new ElapsedTime();
     private final PIDF _posPid = new PIDF(Configs.Intake.SeparatorP, Configs.Intake.SeparatorI, Configs.Intake.SeparatorD, 1, 1);
     private final ElapsedTime _thresholdTimer = new ElapsedTime();
     private int _redCounter, _blueCounter;
-    private Odometry _odometry;
     private Servo _clampServo;
+    private DcMotorEx _brushesMotor;
+    private Timer _brushReversTimer = new Timer();
+
+    public class PuckEatEvent{
+        public PuckEatEvent(Color color, int counter){
+            this.Color = color;
+            CountEatenPucks = counter;
+        }
+
+        public Color Color;
+        public int CountEatenPucks;
+    }
+
+    public Event<PuckEatEvent> puckEatEvent = new Event<>();
 
     @Override
     public void Init(BaseCollector collector) {
         _separatorMotor = Devices.SeparatorMotor;
-        _puckSensor = Devices.PuckSensor;
+
+        _puckSensor =  new ColorSensor(Devices.PuckSensor);
+        _floorSensorLeft = new ColorSensor(Devices.FloorSensorLeft);
+        _floorSensorRight = new ColorSensor(Devices.FloorSensorRight);
 
         _separatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         Reset();
 
-        _odometry = collector.GetModule(Odometry.class);
-
         _clampServo = Devices.Clamp;
+
+        _brushesMotor = Devices.BrushesMotor;
     }
 
     public void Reset() {
@@ -73,22 +90,39 @@ public class Intake implements IRobotModule {
         }
 
         if(_puckDetectDelay.seconds() > Configs.Intake.PuckDetectDelaySec) {
-            double puckDetect = _puckSensor.getVoltage();
-
-            if (Math.abs(puckDetect - Configs.Intake.RedVoltage) < Configs.Intake.PuckDetectSensitivity) {
+            if (_puckSensor.getColor().equals(new Color(Configs.Intake.RRedPuck, Configs.Intake.GRedPuck, Configs.Intake.BRedPuck), Configs.Intake.PuckDetectSensitivity)) {
                 _targetSeparatorPosition += Configs.Intake.Shift;
                 _puckDetectDelay.reset();
                 _redCounter++;
-            } else if (Math.abs(puckDetect - Configs.Intake.BlueVoltage) < Configs.Intake.PuckDetectSensitivity) {
+
+                puckEatEvent.Invoke(new PuckEatEvent(Color.RED, _redCounter));
+            } else if (_puckSensor.getColor().equals(new Color(Configs.Intake.RBluePuck, Configs.Intake.GBluePuck, Configs.Intake.BBluePuck), Configs.Intake.PuckDetectSensitivity)) {
                 _targetSeparatorPosition -= Configs.Intake.Shift;
                 _puckDetectDelay.reset();
                 _blueCounter++;
+
+                puckEatEvent.Invoke(new PuckEatEvent(Color.BLUE, _blueCounter));
             }
         }
 
-        if(Vector2.Minus(_odometry.Position, GameData.StartPosition.Position).Abs() < Configs.Intake.ClampRadius)
+        Color floorColor = GameData.StartPosition == StartRobotPosition.RED ?
+                new Color(Configs.Intake.RRedFloor, Configs.Intake.GRedFloor, Configs.Intake.BRedFloor) :
+                new Color(Configs.Intake.RBlueFloor, Configs.Intake.GBlueFloor, Configs.Intake.BBlueFloor);
+
+        if(_floorSensorLeft.getColor().equals(floorColor, Configs.Intake.FloorDetectSensitivity) && _floorSensorRight.getColor().equals(floorColor, Configs.Intake.FloorDetectSensitivity))
             _clampServo.setPosition(Configs.Intake.ClampRealise);
         else
             _clampServo.setPosition(Configs.Intake.ClampClamped);
+
+        if(_brushesMotor.getCurrent(CurrentUnit.AMPS) > Configs.Intake.BrushCurrentDefend && !_brushReversTimer.IsActive()) {
+            _brushesMotor.setPower(-Configs.Intake.BrushPower);
+
+            _brushReversTimer.Start(Configs.Intake.BrushDefendReverseTime, () -> _brushesMotor.setPower(Configs.Intake.BrushPower));
+        }
+    }
+
+    @Override
+    public void Start() {
+        _brushesMotor.setPower(Configs.Intake.BrushPower);
     }
 }

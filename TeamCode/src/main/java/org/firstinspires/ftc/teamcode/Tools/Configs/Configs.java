@@ -65,14 +65,22 @@ public class Configs {
 
         public static double Shift = 240;
 
-        public static double RedVoltage = 0.2, BlueVoltage = 0.6, PuckDetectSensitivity = 0.1;
+        public static int PuckDetectSensitivity = 1, FloorDetectSensitivity = 1;
         public static double PuckDetectDelaySec = 0.5;
+
+        public static int RRedPuck = 255, GRedPuck = 0, BRedPuck = 0;
+        public static int RBluePuck = 0, GBluePuck = 0, BBluePuck = 255;
+
+        public static int RRedFloor = 255, GRedFloor = 0, BRedFloor = 0;
+        public static int RBlueFloor = 0, GBlueFloor = 0, BBlueFloor = 255;
 
         public static double ThresholdAmps = 1, ReversTimeSec = 0.5, ThresholdSensitivity = 15;
 
-        public static double ClampRadius = 10;
-
         public static double ClampClamped = 0.5, ClampRealise = 0;
+
+        public static int ColorSensorAddr = 0x29;
+
+        public static double BrushCurrentDefend = 5, BrushDefendReverseTime = 1000, BrushPower = 0.5;
     }
 
     @Config

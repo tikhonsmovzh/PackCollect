@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerImpl;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
-import org.firstinspires.ftc.teamcode.Tools.ToolTelemetry;
+import org.firstinspires.ftc.teamcode.Tools.StaticTelemetry;
 
 public class LinearOpModeBase extends LinearOpMode {
 
@@ -17,7 +17,7 @@ public class LinearOpModeBase extends LinearOpMode {
     @Override
     public void runOpMode() {
         try {
-            ToolTelemetry.SetTelemetry(telemetry);
+            StaticTelemetry.SetTelemetry(telemetry);
             BaseCollector _collector = GetCollector();
 
             if(IsStarted)
@@ -29,18 +29,18 @@ public class LinearOpModeBase extends LinearOpMode {
 
             while (opModeIsActive()) {
                 _collector.Update();
-                ToolTelemetry.Update();
+                StaticTelemetry.Update();
             }
 
             _collector.Stop();
         }
         catch (Exception e){
-            ToolTelemetry.AddLine(e.getMessage());
+            StaticTelemetry.AddLine(e.getMessage());
 
             for(StackTraceElement i : e.getStackTrace())
-                ToolTelemetry.AddLine(i.getClassName());
+                StaticTelemetry.AddLine(i.getClassName());
 
-            ToolTelemetry.Update();
+            StaticTelemetry.Update();
 
             throw e;
         }
