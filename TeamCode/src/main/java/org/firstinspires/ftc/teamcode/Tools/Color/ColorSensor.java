@@ -1,47 +1,37 @@
 package org.firstinspires.ftc.teamcode.Tools.Color;
 
-import com.qualcomm.robotcore.hardware.I2cAddr;
-import com.qualcomm.robotcore.hardware.I2cDevice;
+import com.qualcomm.hardware.adafruit.AdafruitI2cColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.qualcomm.robotcore.hardware.SwitchableLight;
 
-import org.firstinspires.ftc.teamcode.Tools.Configs.Configs;
+import org.firstinspires.ftc.teamcode.Tools.StaticTelemetry;
 import org.firstinspires.ftc.teamcode.Tools.UpdateHandler.IHandlered;
 import org.firstinspires.ftc.teamcode.Tools.UpdateHandler.UpdateHandler;
 
 public class ColorSensor implements IHandlered {
-    private static final I2cAddr _addr = new I2cAddr(Configs.Intake.ColorSensorAddr);
+    private Color _color = new Color(0, 0, 0);
 
-    private final I2cDevice _device;
+    private AdafruitI2cColorSensor _sensor;
 
-    private Color _color;
+    public ColorSensor(AdafruitI2cColorSensor sensor){
+        _sensor = sensor;
 
-    public ColorSensor(I2cDevice device){
+        _sensor.setGain(2);
+
+        if (_sensor instanceof SwitchableLight) {
+            ((SwitchableLight)_sensor).enableLight(true);
+        }
+
         UpdateHandler.AddHandlered(this);
-
-        _device = device;
-    }
-
-    private void write(byte[] buffer){
-        _device.enableI2cWriteMode(_addr, 0, buffer.length);
-        _device.copyBufferIntoWriteBuffer(buffer);
-    }
-
-    private byte[] read(int length){
-        _device.enableI2cReadMode(_addr, 0, length);
-
-        return _device.getCopyOfReadBuffer();
-    }
-
-    @Override
-    public void Start() {
-        write(new byte[]{0x00});
     }
 
     @Override
     public void Update() {
-        write(new byte[]{0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B});
-        byte[] buf = read(6);
+        NormalizedRGBA color = _sensor.getNormalizedColors();
 
-        _color = Color.ofBytes(buf);
+        StaticTelemetry.AddLine(color.red + " " + color.green + " " + color.blue + " " + color);
+
+        _color = new Color((int)(color.red * 255), (int)(color.green * 255), (int)(color.blue * 255));
     }
 
     public Color getColor(){

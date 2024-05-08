@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Collectors;
 
+import com.qualcomm.hardware.adafruit.AdafruitI2cColorSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -38,9 +39,10 @@ public class BaseCollector {
 
         _modules.clear();
 
+        _updateHandler = new UpdateHandler();
+
         Devices.Init(robot.hardwareMap);
 
-        _updateHandler = new UpdateHandler();
         _battery = new Battery(this);
         Time = new ElapsedTime();
 
@@ -131,8 +133,11 @@ public class BaseCollector {
             throw new RuntimeException("not correct constructor in module " + type.getName());
         }
 
-        if (instance instanceof IRobotModule)
+        if (instance instanceof IRobotModule) {
+            UpdateHandler.AddHandlered((IRobotModule)instance);
+
             return (IRobotModule) instance;
+        }
 
         throw new RuntimeException(type.getName() + "instance not instanceof IRobotModule");
     }

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Modules;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
@@ -11,15 +12,14 @@ import org.firstinspires.ftc.teamcode.Tools.Devices;
 import org.firstinspires.ftc.teamcode.Tools.Motor.Motor;
 import org.firstinspires.ftc.teamcode.Tools.Motor.ReductorType;
 
-
 @Module
 public class Drivetrain implements IRobotModule {
-    private Motor _leftDrive, _rightDrive;
+    private DcMotorEx _leftDrive, _rightDrive;
 
     @Override
     public void Init(BaseCollector collector) {
-        _leftDrive = new Motor(Devices.LeftDrive, ReductorType.TWENTY);
-        _rightDrive = new Motor(Devices.RightDrive, ReductorType.TWENTY);
+        _leftDrive = Devices.LeftDrive;
+        _rightDrive = Devices.RightDrive;
 
         _leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         _rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

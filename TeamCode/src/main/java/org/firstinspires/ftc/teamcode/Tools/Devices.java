@@ -1,20 +1,20 @@
 package org.firstinspires.ftc.teamcode.Tools;
 
-import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
 import com.qualcomm.hardware.adafruit.AdafruitI2cColorSensor;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cDevice;
-import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynchImplOnSimple;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynchSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorMRColor;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Tools.Color.ColorSensor;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class Devices {
 
     public static IMU IMU;
 
-    public static I2cDevice PuckSensor, FloorSensorLeft, FloorSensorRight;
+    public static AdafruitI2cColorSensor FloorSensorLeft, FloorSensorRight, PuckSensor;
     public static Servo Clamp;
 
     public static List<LynxModule> Hubs;
@@ -54,13 +54,12 @@ public class Devices {
 
         //Camera = map.get(WebcamName.class, "Webcam 1");
 
-
         IMU = map.get(IMU.class, "imu");
 
-        PuckSensor = map.get(I2cDevice.class, "puckSensor");
+        PuckSensor = map.get(AdafruitI2cColorSensor.class, "puckSensor");
 
-        FloorSensorLeft = map.get(I2cDevice.class, "floorSensorLeft");
-        FloorSensorRight = map.get(I2cDevice.class, "floorSensorRight");
+        //FloorSensorLeft = map.get(NormalizedColorSensor.class, "floorSensorLeft");
+        //FloorSensorRight = map.get(NormalizedColorSensor.class, "floorSensorRight");
 
         Clamp = map.get(Servo.class, "clamp");
 

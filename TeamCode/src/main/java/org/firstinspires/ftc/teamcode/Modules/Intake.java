@@ -48,7 +48,7 @@ public class Intake implements IRobotModule {
     public void Init(BaseCollector collector) {
         _separatorMotor = Devices.SeparatorMotor;
 
-        _puckSensor =  new ColorSensor(Devices.PuckSensor);
+        _puckSensor = new ColorSensor(Devices.PuckSensor);
         _floorSensorLeft = new ColorSensor(Devices.FloorSensorLeft);
         _floorSensorRight = new ColorSensor(Devices.FloorSensorRight);
 
