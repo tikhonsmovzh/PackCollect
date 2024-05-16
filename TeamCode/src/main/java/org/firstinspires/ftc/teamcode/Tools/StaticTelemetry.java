@@ -4,10 +4,15 @@ package org.firstinspires.ftc.teamcode.Tools;
 import com.acmerobotics.dashboard.canvas.Canvas;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerImpl;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.LinearsOpMode.LinearOpModeBase;
 import org.firstinspires.ftc.teamcode.Tools.Color.Color;
 import org.firstinspires.ftc.teamcode.Tools.Configs.Configs;
 import org.firstinspires.ftc.teamcode.Tools.Units.Vector2;
@@ -15,22 +20,32 @@ import org.firstinspires.ftc.teamcode.Tools.Units.Vector2;
 public class StaticTelemetry {
     private static Telemetry _telemetry;
 
-    public static void SetTelemetry(Telemetry telemetry) {
-        _telemetry = telemetry;
-    }
-
     private static TelemetryPacket _packet = new TelemetryPacket();
+    private static TelemetryPacket _threadPacket = null;
 
     public static void Update() {
         if (!Configs.GeneralSettings.TelemetryOn)
             return;
 
         _telemetry.update();
-        FtcDashboard ftcDashboard = FtcDashboard.getInstance();
 
-        ftcDashboard.sendTelemetryPacket(_packet);
-
+        _threadPacket = _packet;
         _packet = new TelemetryPacket();
+    }
+
+    public static void Init(LinearOpMode opMode){
+        _telemetry = opMode.telemetry;
+
+        new Thread(()->{
+            while (opMode.opModeIsActive() || opMode.opModeInInit()) {
+                if (_threadPacket == null)
+                    return;
+
+                FtcDashboard.getInstance().sendTelemetryPacket(_threadPacket);
+
+                _threadPacket = null;
+            }
+        }).start();
     }
 
     public static Canvas GetCanvas() {

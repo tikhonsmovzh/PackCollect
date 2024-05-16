@@ -26,7 +26,6 @@ import dalvik.system.DexFile;
 public class BaseCollector {
     public LinearOpMode Robot;
     public ElapsedTime Time;
-    private final Battery _battery;
 
     private static ArrayList<Class<?>> _annotatedClass;
 
@@ -43,7 +42,7 @@ public class BaseCollector {
 
         Devices.Init(robot.hardwareMap);
 
-        _battery = new Battery(this);
+        new Battery(this);
         Time = new ElapsedTime();
 
         if (_annotatedClass == null)

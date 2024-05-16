@@ -17,7 +17,7 @@ public class LinearOpModeBase extends LinearOpMode {
     @Override
     public void runOpMode() {
         try {
-            StaticTelemetry.SetTelemetry(telemetry);
+            StaticTelemetry.Init(this);
             BaseCollector _collector = GetCollector();
 
             if(IsStarted)
