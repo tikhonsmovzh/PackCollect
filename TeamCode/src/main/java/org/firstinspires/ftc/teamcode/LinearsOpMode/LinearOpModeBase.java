@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerImpl;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
-import org.firstinspires.ftc.teamcode.Tools.StaticTelemetry;
+import org.firstinspires.ftc.teamcode.Utils.StaticTelemetry;
 
 public class LinearOpModeBase extends LinearOpMode {
 
@@ -17,7 +17,7 @@ public class LinearOpModeBase extends LinearOpMode {
     @Override
     public void runOpMode() {
         try {
-            StaticTelemetry.SetTelemetry(telemetry);
+            StaticTelemetry.Init(this);
             BaseCollector _collector = GetCollector();
 
             if(IsStarted)

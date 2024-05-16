@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Collectors;
 
-import com.qualcomm.hardware.adafruit.AdafruitI2cColorSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -8,10 +7,9 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Modules.Manager.BulkInit;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.Manager.Module;
-import org.firstinspires.ftc.teamcode.Tools.Battery;
-import org.firstinspires.ftc.teamcode.Tools.Devices;
-import org.firstinspires.ftc.teamcode.Tools.Events.Event;
-import org.firstinspires.ftc.teamcode.Tools.UpdateHandler.UpdateHandler;
+import org.firstinspires.ftc.teamcode.Utils.Battery;
+import org.firstinspires.ftc.teamcode.Utils.Devices;
+import org.firstinspires.ftc.teamcode.Utils.UpdateHandler.UpdateHandler;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -26,7 +24,6 @@ import dalvik.system.DexFile;
 public class BaseCollector {
     public LinearOpMode Robot;
     public ElapsedTime Time;
-    private final Battery _battery;
 
     private static ArrayList<Class<?>> _annotatedClass;
 
@@ -43,7 +40,7 @@ public class BaseCollector {
 
         Devices.Init(robot.hardwareMap);
 
-        _battery = new Battery(this);
+        new Battery(this);
         Time = new ElapsedTime();
 
         if (_annotatedClass == null)

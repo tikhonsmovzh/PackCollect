@@ -6,8 +6,8 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.Manager.Module;
-import org.firstinspires.ftc.teamcode.Tools.Configs.Configs;
-import org.firstinspires.ftc.teamcode.Tools.Devices;
+import org.firstinspires.ftc.teamcode.Utils.Configs.Configs;
+import org.firstinspires.ftc.teamcode.Utils.Devices;
 
 import java.util.List;
 

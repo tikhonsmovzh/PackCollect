@@ -8,9 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.Manager.Module;
-import org.firstinspires.ftc.teamcode.Tools.Devices;
-import org.firstinspires.ftc.teamcode.Tools.Motor.Motor;
-import org.firstinspires.ftc.teamcode.Tools.Motor.ReductorType;
+import org.firstinspires.ftc.teamcode.Utils.Devices;
 
 @Module
 public class Drivetrain implements IRobotModule {

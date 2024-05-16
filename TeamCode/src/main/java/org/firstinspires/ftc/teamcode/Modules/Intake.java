@@ -10,30 +10,31 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.Manager.Module;
-import org.firstinspires.ftc.teamcode.Tools.Color.Color;
-import org.firstinspires.ftc.teamcode.Tools.Color.ColorSensor;
-import org.firstinspires.ftc.teamcode.Tools.Configs.Configs;
-import org.firstinspires.ftc.teamcode.Tools.Devices;
-import org.firstinspires.ftc.teamcode.Tools.Events.Event;
-import org.firstinspires.ftc.teamcode.Tools.GameData;
-import org.firstinspires.ftc.teamcode.Tools.PID.PIDF;
-import org.firstinspires.ftc.teamcode.Tools.Timers.Timer;
+import org.firstinspires.ftc.teamcode.Utils.Color.Color;
+import org.firstinspires.ftc.teamcode.Utils.Color.ColorSensor;
+import org.firstinspires.ftc.teamcode.Utils.Configs.Configs;
+import org.firstinspires.ftc.teamcode.Utils.Devices;
+import org.firstinspires.ftc.teamcode.Utils.Events.Event;
+import org.firstinspires.ftc.teamcode.Utils.GameData;
+import org.firstinspires.ftc.teamcode.Utils.PID.PIDF;
+import org.firstinspires.ftc.teamcode.Utils.StaticTelemetry;
+import org.firstinspires.ftc.teamcode.Utils.Timers.Timer;
 
 @Module
 public class Intake implements IRobotModule {
     private DcMotorEx _separatorMotor;
     private ColorSensor _puckSensor, _floorSensorLeft, _floorSensorRight;
-    private double _targetSeparatorPosition;
+    private int _targetSeparatorPosition;
     private final ElapsedTime _puckDetectDelay = new ElapsedTime();
-    private final PIDF _posPid = new PIDF(Configs.Intake.SeparatorP, Configs.Intake.SeparatorI, Configs.Intake.SeparatorD, 1, 1);
+    private final PIDF _posPid = new PIDF(Configs.Intake.SeparatorP, Configs.Intake.SeparatorI, Configs.Intake.SeparatorD, 0.75, 1);
     private final ElapsedTime _thresholdTimer = new ElapsedTime();
     private int _redCounter, _blueCounter;
     private Servo _clampServo;
     private DcMotorEx _brushesMotor;
     private Timer _brushReversTimer = new Timer();
 
-    public class PuckEatEvent{
-        public PuckEatEvent(Color color, int counter){
+    public class PuckEatEvent {
+        public PuckEatEvent(Color color, int counter) {
             this.Color = color;
             CountEatenPucks = counter;
         }
@@ -68,11 +69,11 @@ public class Intake implements IRobotModule {
         _blueCounter = 0;
     }
 
-    public int GetRedCounter(){
+    public int GetRedCounter() {
         return _redCounter;
     }
 
-    public int GetBlueCounter(){
+    public int GetBlueCounter() {
         return _blueCounter;
     }
 
@@ -80,16 +81,17 @@ public class Intake implements IRobotModule {
     public void Update() {
         _posPid.UpdateCoefs(Configs.Intake.SeparatorP, Configs.Intake.SeparatorI, Configs.Intake.SeparatorD);
 
-        if(_thresholdTimer.seconds() > Configs.Intake.ReversTimeSec) {
-            _separatorMotor.setPower(_posPid.Update(_targetSeparatorPosition - _separatorMotor.getCurrentPosition()));
 
-            if(_separatorMotor.getCurrent(CurrentUnit.AMPS) > Configs.Intake.ThresholdAmps && Math.abs(_posPid.Err) > Configs.Intake.ThresholdSensitivity) {
-                _separatorMotor.setPower(Math.signum(_posPid.Err));
+        if (_thresholdTimer.seconds() > Configs.Intake.ReversTimeSec) {
+            _separatorMotor.setPower(_posPid.Update((double) _separatorMotor.getCurrentPosition() - _targetSeparatorPosition));
+
+            if (_separatorMotor.getCurrent(CurrentUnit.AMPS) > Configs.Intake.ThresholdAmps && _thresholdTimer.seconds() > Configs.Intake.DefendReversDelay + Configs.Intake.ReversTimeSec ) {
+                _separatorMotor.setPower(-Math.signum(_posPid.Err));
                 _thresholdTimer.reset();
             }
         }
 
-        if(_puckDetectDelay.seconds() > Configs.Intake.PuckDetectDelaySec) {
+        if (_puckDetectDelay.seconds() > Configs.Intake.PuckDetectDelaySec) {
             if (_puckSensor.getColor().equals(new Color(Configs.Intake.RRedPuck, Configs.Intake.GRedPuck, Configs.Intake.BRedPuck), Configs.Intake.PuckDetectSensitivity)) {
                 _targetSeparatorPosition += Configs.Intake.Shift;
                 _puckDetectDelay.reset();
@@ -109,15 +111,21 @@ public class Intake implements IRobotModule {
                 new Color(Configs.Intake.RRedFloor, Configs.Intake.GRedFloor, Configs.Intake.BRedFloor) :
                 new Color(Configs.Intake.RBlueFloor, Configs.Intake.GBlueFloor, Configs.Intake.BBlueFloor);
 
-        if(_floorSensorLeft.getColor().equals(floorColor, Configs.Intake.FloorDetectSensitivity) && _floorSensorRight.getColor().equals(floorColor, Configs.Intake.FloorDetectSensitivity))
+        if (_floorSensorLeft.getColor().equals(floorColor, Configs.Intake.FloorDetectSensitivity) && _floorSensorRight.getColor().equals(floorColor, Configs.Intake.FloorDetectSensitivity))
             _clampServo.setPosition(Configs.Intake.ClampRealise);
         else
             _clampServo.setPosition(Configs.Intake.ClampClamped);
 
-        if(_brushesMotor.getCurrent(CurrentUnit.AMPS) > Configs.Intake.BrushCurrentDefend && !_brushReversTimer.IsActive()) {
+        StaticTelemetry.AddVal("amp", _brushesMotor.getCurrent(CurrentUnit.AMPS));
+
+        if (_brushesMotor.getCurrent(CurrentUnit.AMPS) > Configs.Intake.BrushCurrentDefend && !_brushReversTimer.IsActive()) {
             _brushesMotor.setPower(-Configs.Intake.BrushPower);
 
-            _brushReversTimer.Start(Configs.Intake.BrushDefendReverseTime, () -> _brushesMotor.setPower(Configs.Intake.BrushPower));
+            _brushReversTimer.Start(Configs.Intake.BrushDefendReverseTime, () -> {
+                _brushesMotor.setPower(Configs.Intake.BrushPower);
+                _brushReversTimer.Start(Configs.Intake.DefendReversDelay, () -> {
+                });
+            });
         }
     }
 

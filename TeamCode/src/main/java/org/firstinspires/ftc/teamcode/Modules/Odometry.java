@@ -8,11 +8,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.Manager.Module;
-import org.firstinspires.ftc.teamcode.Tools.Units.Angle;
-import org.firstinspires.ftc.teamcode.Tools.Configs.Configs;
-import org.firstinspires.ftc.teamcode.Tools.Devices;
-import org.firstinspires.ftc.teamcode.Tools.Motor.EncoderControl;
-import org.firstinspires.ftc.teamcode.Tools.Units.Vector2;
+import org.firstinspires.ftc.teamcode.Utils.Units.Angle;
+import org.firstinspires.ftc.teamcode.Utils.Configs.Configs;
+import org.firstinspires.ftc.teamcode.Utils.Devices;
+import org.firstinspires.ftc.teamcode.Utils.Motor.EncoderControl;
+import org.firstinspires.ftc.teamcode.Utils.Units.Vector2;
 
 
 @Module

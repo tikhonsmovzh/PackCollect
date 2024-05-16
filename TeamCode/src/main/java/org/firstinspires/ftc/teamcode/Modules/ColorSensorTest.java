@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode.Modules;
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.Manager.Module;
-import org.firstinspires.ftc.teamcode.Tools.Color.ColorSensor;
-import org.firstinspires.ftc.teamcode.Tools.Devices;
-import org.firstinspires.ftc.teamcode.Tools.StaticTelemetry;
+import org.firstinspires.ftc.teamcode.Utils.Color.ColorSensor;
+import org.firstinspires.ftc.teamcode.Utils.Devices;
+import org.firstinspires.ftc.teamcode.Utils.StaticTelemetry;
 
 @Module
 public class ColorSensorTest implements IRobotModule {

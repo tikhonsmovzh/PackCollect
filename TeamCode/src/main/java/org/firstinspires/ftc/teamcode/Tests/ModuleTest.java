@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.LinearsOpMode.LinearOpModeBase;
 import org.firstinspires.ftc.teamcode.Modules.Camera.VisionPortalHandler;
 import org.firstinspires.ftc.teamcode.Modules.ColorSensorTest;
+import org.firstinspires.ftc.teamcode.Modules.Intake;
 
 @TeleOp
 public class ModuleTest extends LinearOpModeBase {
@@ -13,7 +14,7 @@ public class ModuleTest extends LinearOpModeBase {
     protected BaseCollector GetCollector() {
         BaseCollector collector = new BaseCollector(this);
 
-        collector.InitOne(ColorSensorTest.class);
+        collector.InitOne(Intake.class);
 
         return collector;
     }
