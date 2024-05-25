@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Modules;
+package org.firstinspires.ftc.teamcode.Tests.Modules;
 
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
@@ -18,6 +18,6 @@ public class ColorSensorTest implements IRobotModule {
 
     @Override
     public void Update() {
-        StaticTelemetry.AddLine("color = " + _sensor.getColor());
+        StaticTelemetry.AddLine("color = " + _sensor.getColor().R + " " + _sensor.getColor().G + " " + _sensor.getColor().B);
     }
 }

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Tests;
 
+import static com.qualcomm.hardware.ams.AMSColorSensor.AMS_TCS34725_ADDRESS;
+import static com.qualcomm.hardware.ams.AMSColorSensor.AMS_TCS34725_ID;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.teamcode.Tests.DeviceTest.DeviceType.ANALOG_INPUT;
 import static org.firstinspires.ftc.teamcode.Tests.DeviceTest.DeviceType.BATTERY_VOLTAGE;
@@ -15,6 +17,8 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.adafruit.AdafruitI2cColorSensor;
+import com.qualcomm.hardware.ams.AMSColorSensor;
+import com.qualcomm.hardware.ams.AMSColorSensorImpl;
 import com.qualcomm.hardware.lynx.LynxI2cDeviceSynchV2;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -29,6 +33,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynchDeviceWithParameters;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -38,6 +43,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 
@@ -71,6 +77,22 @@ public class DeviceTest extends LinearOpMode {
 
     @Override
     public void runOpMode(){
+
+
+        //AMSColorSensor.AMS_TCS34725_ID = 0x4D;
+
+
+        Field IDfield = null;
+
+        try {
+            IDfield = AMSColorSensor.class.getDeclaredField("AMS_TCS34725_ID");
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+
+        IDfield.setAccessible(true);
+
+
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         hardwareMap.getAll(IMU.class).forEach(imu -> imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(new Quaternion()))));
         //OpModeManagerImpl.getOpModeManagerOfActivity(AppUtil.getInstance().getActivity()).startActiveOpMode();
@@ -123,7 +145,21 @@ public class DeviceTest extends LinearOpMode {
                         telemetry.addData("Voltage", voltageSensor.getVoltage());
                         break;
                     case COLOR_SENSOR:
+                        AMSColorSensor.Parameters parameters = new AMSColorSensor.Parameters(AMS_TCS34725_ADDRESS, 0x4D);
                         ColorSensor colorSensor = hardwareMap.get(ColorSensor.class, deviceName);
+                        try {
+                            Field paramField = I2cDeviceSynchDeviceWithParameters.class.getDeclaredField("parameters");
+                            telemetry.addLine("OK");
+                            try {
+                                paramField.setAccessible(true);
+                                paramField.set(colorSensor, parameters);
+                                telemetry.addLine("Changed");
+                            } catch (IllegalAccessException e) {
+                                telemetry.addLine("IllegalAccessException");
+                            }
+                        }  catch (NoSuchFieldException e) {
+                            telemetry.addLine("ERROR");
+                        }
                         telemetry.addData("red", colorSensor.red());
                         telemetry.addData("green", colorSensor.green());
                         telemetry.addData("blue", colorSensor.blue());

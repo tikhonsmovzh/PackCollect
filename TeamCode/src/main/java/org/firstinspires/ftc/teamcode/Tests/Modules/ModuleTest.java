@@ -1,12 +1,11 @@
-package org.firstinspires.ftc.teamcode.Tests;
+package org.firstinspires.ftc.teamcode.Tests.Modules;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.LinearsOpMode.LinearOpModeBase;
-import org.firstinspires.ftc.teamcode.Modules.Camera.VisionPortalHandler;
-import org.firstinspires.ftc.teamcode.Modules.ColorSensorTest;
 import org.firstinspires.ftc.teamcode.Modules.Intake;
+import org.firstinspires.ftc.teamcode.Utils.Color.ColorSensor;
 
 @TeleOp
 public class ModuleTest extends LinearOpModeBase {

@@ -25,7 +25,7 @@ public class Devices {
 
     public static IMU IMU;
 
-    public static AdafruitI2cColorSensor FloorSensorLeft, FloorSensorRight, PuckSensor;
+    public static AdafruitI2cColorSensor FloorSensor, PuckSensor;
     public static Servo Clamp;
 
     public static List<LynxModule> Hubs;
@@ -52,8 +52,7 @@ public class Devices {
 
         PuckSensor = map.get(AdafruitI2cColorSensor.class, "puckSensor");
 
-        //FloorSensorLeft = map.get(NormalizedColorSensor.class, "floorSensorLeft");
-        //FloorSensorRight = map.get(NormalizedColorSensor.class, "floorSensorRight");
+        FloorSensor = map.get(AdafruitI2cColorSensor.class, "floorSensor");
 
         Clamp = map.get(Servo.class, "clamp");
 

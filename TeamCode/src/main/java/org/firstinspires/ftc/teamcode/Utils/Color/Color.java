@@ -15,6 +15,10 @@ public class Color {
     public static Color YELLOW = new Color(255, 255, 0);
     public static Color ORANGE = new Color(255, 128, 0);
 
+    public static int Scale = 256;
+
+    public static int Min = 0, Max = 255;
+
     public int R, G, B;
 
     public Color(int r, int g, int b){

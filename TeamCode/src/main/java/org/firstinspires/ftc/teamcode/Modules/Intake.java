@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.Utils.Timers.Timer;
 @Module
 public class Intake implements IRobotModule {
     private DcMotorEx _separatorMotor;
-    private ColorSensor _puckSensor, _floorSensorLeft, _floorSensorRight;
+    private ColorSensor _puckSensor, _floorSensor;
     private int _targetSeparatorPosition;
     private final ElapsedTime _puckDetectDelay = new ElapsedTime();
     private final PIDF _posPid = new PIDF(Configs.Intake.SeparatorP, Configs.Intake.SeparatorI, Configs.Intake.SeparatorD, 0.75, 1);
@@ -50,8 +50,7 @@ public class Intake implements IRobotModule {
         _separatorMotor = Devices.SeparatorMotor;
 
         _puckSensor = new ColorSensor(Devices.PuckSensor);
-        _floorSensorLeft = new ColorSensor(Devices.FloorSensorLeft);
-        _floorSensorRight = new ColorSensor(Devices.FloorSensorRight);
+        _floorSensor = new ColorSensor(Devices.FloorSensor);
 
         _separatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         Reset();
@@ -111,14 +110,14 @@ public class Intake implements IRobotModule {
                 new Color(Configs.Intake.RRedFloor, Configs.Intake.GRedFloor, Configs.Intake.BRedFloor) :
                 new Color(Configs.Intake.RBlueFloor, Configs.Intake.GBlueFloor, Configs.Intake.BBlueFloor);
 
-        if (_floorSensorLeft.getColor().equals(floorColor, Configs.Intake.FloorDetectSensitivity) && _floorSensorRight.getColor().equals(floorColor, Configs.Intake.FloorDetectSensitivity))
+        if (_floorSensor.getColor().equals(floorColor, Configs.Intake.FloorDetectSensitivity))
             _clampServo.setPosition(Configs.Intake.ClampRealise);
         else
             _clampServo.setPosition(Configs.Intake.ClampClamped);
 
         StaticTelemetry.AddVal("amp", _brushesMotor.getCurrent(CurrentUnit.AMPS));
 
-        if (_brushesMotor.getCurrent(CurrentUnit.AMPS) > Configs.Intake.BrushCurrentDefend && !_brushReversTimer.IsActive()) {
+        /*if (_brushesMotor.getCurrent(CurrentUnit.AMPS) > Configs.Intake.BrushCurrentDefend && !_brushReversTimer.IsActive()) {
             _brushesMotor.setPower(-Configs.Intake.BrushPower);
 
             _brushReversTimer.Start(Configs.Intake.BrushDefendReverseTime, () -> {
@@ -126,11 +125,11 @@ public class Intake implements IRobotModule {
                 _brushReversTimer.Start(Configs.Intake.DefendReversDelay, () -> {
                 });
             });
-        }
+        }*/
     }
 
     @Override
     public void Start() {
-        _brushesMotor.setPower(Configs.Intake.BrushPower);
+        //_brushesMotor.setPower(Configs.Intake.BrushPower);
     }
 }

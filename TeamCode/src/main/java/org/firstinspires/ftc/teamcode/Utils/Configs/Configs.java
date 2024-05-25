@@ -60,14 +60,14 @@ public class Configs {
         public static double PuckDetectDelaySec = 2;
 
         public static int RRedPuck = 255, GRedPuck = 0, BRedPuck = 0;
-        public static int RBluePuck = 0, GBluePuck = 0, BBluePuck = 255;
+        public static int RBluePuck = 1, GBluePuck = 3, BBluePuck = 5;
 
         public static int RRedFloor = 255, GRedFloor = 0, BRedFloor = 0;
         public static int RBlueFloor = 0, GBlueFloor = 0, BBlueFloor = 255;
 
         public static double ThresholdAmps = 15, ReversTimeSec = 0.5, ThresholdSensitivity = 15;
 
-        public static double ClampClamped = 0.5, ClampRealise = 0;
+        public static double ClampClamped = 1, ClampRealise = 0.7;
 
         public static double BrushCurrentDefend = 2, BrushDefendReverseTime = 2, BrushPower = 1;
 
