@@ -6,42 +6,50 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.Manager.Module;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.firstinspires.ftc.teamcode.Modules.PidRunner.EndState.AutomaticStates;
 
 @Module
 public class PidRouteManager implements IRobotModule {
-    private List<Runnable> _route;
-
-    private int _currentRouteAction = 0;
-    private double _waitTime = -1;
-
-    private PidAutomatic _automatic;
-    private final ElapsedTime _timer = new ElapsedTime();
+    private AutomaticStates _currentState;
+    private AutomaticStates.IRouteAction _currentStateAction;
+    private ElapsedTime _gameTime = new ElapsedTime();
+    private BaseCollector _collector;
 
     @Override
     public void Init(BaseCollector collector) {
-        _automatic = collector.GetModule(PidAutomatic.class);
-
-        _route = new ArrayList<>();
+        _collector = collector;
     }
 
-    private void Wait(double sleep) {
-        _timer.reset();
-        _waitTime = sleep;
+    @Override
+    public void Start() {
+        SwapState(AutomaticStates.PUCK_DETECT);
+        _gameTime.reset();
     }
-
 
     @Override
     public void LateUpdate() {
-        if (_automatic.isMovedEnd() && _timer.milliseconds() > _waitTime) {
-            if (_currentRouteAction < _route.size()) {
-                _route.get(_currentRouteAction).run();
+        _currentStateAction.Update();
 
-                _currentRouteAction++;
+        if (_currentStateAction.IsEnd()) ;
+        {
+            //if(_gameTime.seconds() > 90)
+            //    SwapState(AutomaticStates.BACK_TO_HOME);
+
+            switch (_currentState) {
+                case PUCK_DETECT:
+                    SwapState(AutomaticStates.RUN_TO_PUCK);
+                    break;
+
+                case RUN_TO_PUCK:
+                    SwapState(AutomaticStates.PUCK_DETECT);
             }
         }
     }
-}
 
+    private void SwapState(AutomaticStates state) {
+        _currentState = state;
+        _currentStateAction = _currentState.GetNewActionInstance();
+        _currentStateAction.Init(_collector);
+        _currentStateAction.Start();
+    }
+}

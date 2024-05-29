@@ -78,8 +78,8 @@ public class Color {
 
         Color color = (Color) obj;
 
-        return Math.abs(color.R - Configs.Intake.RRedPuck) < sensitivity &&
-                Math.abs(color.G - Configs.Intake.GRedPuck) < sensitivity &&
-                Math.abs(color.B - Configs.Intake.BRedPuck) < sensitivity;
+        return Math.abs(color.R - R) <= sensitivity &&
+                Math.abs(color.G - G) <= sensitivity &&
+                Math.abs(color.B - B) <= sensitivity;
     }
 }

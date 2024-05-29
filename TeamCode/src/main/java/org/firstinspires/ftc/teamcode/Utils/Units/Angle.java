@@ -56,6 +56,10 @@ public class Angle {
         return new Angle(ChopAngle(angl1.getRadian() - angl2.getRadian()));
     }
 
+    public static Angle Plus(Angle angl1, Angle angl2){
+        return new Angle(ChopAngle(angl1.getRadian() + angl2.getRadian()));
+    }
+
     public static Angle ofRadian(double rad){
         return new Angle(rad);
     }

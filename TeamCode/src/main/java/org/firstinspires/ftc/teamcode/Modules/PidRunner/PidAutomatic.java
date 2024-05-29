@@ -40,12 +40,26 @@ public class PidAutomatic implements IRobotModule {
         MoveToPoint(Vector2.Plus(moved, _targetPosition));
     }
 
+    private double _targetAngle = 0;
+
+    public void TurnTo(Angle angle){
+        _targetAngle = angle.getRadian();
+    }
+
+    public void Turn(Angle angle){
+        _targetAngle = Angle.Plus(Angle.ofRadian(_targetAngle), angle).getRadian();
+    }
+
     public void MoveToPoint(Vector2 moved) {
         _targetPosition = moved;
 
+        Vector2 err = Vector2.Minus(_targetPosition, _odometry.Position);
+
+        _targetAngle = Math.atan2(err.Y, err.X);
+
         _PIDFForward.Reset();
 
-        _PIDFForward.Update(Vector2.Minus(_targetPosition, _odometry.Position).Abs());
+        _PIDFForward.Update(err.Abs());
     }
 
     private Vector2 _targetPosition = new Vector2();
@@ -65,7 +79,7 @@ public class PidAutomatic implements IRobotModule {
 
             _driverTrain.Drive(
                     Math.abs(_PIDFTurn.Err) < Configs.Automatic.TurnSensitivity || (len < Configs.Automatic.LengthSensitivity && Math.abs(_PIDFTurn.Err) < Configs.Automatic.TurnSensitivity + PI) ? _PIDFForward.Update(len) / Battery.ChargeDelta : 0,
-                    _PIDFTurn.Update(Angle.ChopAngle(_gyro.GetAngle().getRadian() - Math.atan2(dif.Y, dif.X))) / Battery.ChargeDelta);
+                    _PIDFTurn.Update(Angle.ChopAngle(_gyro.GetAngle().getRadian() - _targetAngle)) / Battery.ChargeDelta);
         }
     }
 

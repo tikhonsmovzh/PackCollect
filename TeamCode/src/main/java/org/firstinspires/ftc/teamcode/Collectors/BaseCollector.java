@@ -25,7 +25,7 @@ public class BaseCollector {
     public LinearOpMode Robot;
     public ElapsedTime Time;
 
-    private static ArrayList<Class<?>> _annotatedClass;
+    private static ArrayList<Class<? extends IRobotModule>> _annotatedClass;
 
     private UpdateHandler _updateHandler;
 
@@ -53,7 +53,7 @@ public class BaseCollector {
 
     private static ArrayList<Class<?>> _classes;
 
-    public static ArrayList<Class<?>> GetAnnotatedClasses(Class<? extends Annotation> annotation) {
+    public static ArrayList<Class<? extends IRobotModule>> GetAnnotatedClasses(Class<? extends Annotation> annotation) {
         if (_classes == null) {
             List<String> classNames;
 
@@ -90,18 +90,22 @@ public class BaseCollector {
             }
         }
 
-        ArrayList<Class<?>> result = new ArrayList<>();
+        ArrayList<Class<? extends IRobotModule>> result = new ArrayList<>();
 
         for (Class<?> i : _classes)
-            if (i.isAnnotationPresent(annotation)) {
-                result.add(i);
+            if (i.isAnnotationPresent(annotation) && i.equals(IRobotModule.class)) {
+                result.add((Class<? extends IRobotModule>) i);
             }
 
         return result;
     }
 
+    private boolean _isStarted = false;
+
     public void Start() {
         Time.reset();
+
+        _isStarted = true;
 
         _updateHandler.Start();
     }
@@ -114,8 +118,8 @@ public class BaseCollector {
         _updateHandler.Stop();
     }
 
-    protected void AddAdditionModules(ArrayList<Class<?>> modules) {
-        for (Class<?> i : modules) {
+    protected void AddAdditionModules(ArrayList<Class<? extends IRobotModule>> modules) {
+        for (Class<? extends IRobotModule> i : modules) {
             if(!_modules.containsKey(i))
                 InitOne(i);
         }
@@ -161,11 +165,19 @@ public class BaseCollector {
         throw new RuntimeException("not found " + type.getName() + " module");
     }
 
-    public void InitOne(Class<?> clazz){
+    public void InitOne(Class<? extends IRobotModule> clazz){
         IRobotModule inst = Instance(clazz);
 
         _modules.put(clazz, inst);
 
         inst.Init(this);
+
+        if(_isStarted)
+            inst.Start();
+    }
+
+    public void AddSomeModules(Class<? extends IRobotModule>[] clazzes){
+        for (Class<? extends IRobotModule> clazz: clazzes)
+            InitOne(clazz);
     }
 }

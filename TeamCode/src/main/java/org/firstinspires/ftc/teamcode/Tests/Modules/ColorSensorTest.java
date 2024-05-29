@@ -7,7 +7,6 @@ import org.firstinspires.ftc.teamcode.Utils.Color.ColorSensor;
 import org.firstinspires.ftc.teamcode.Utils.Devices;
 import org.firstinspires.ftc.teamcode.Utils.StaticTelemetry;
 
-@Module
 public class ColorSensorTest implements IRobotModule {
     private ColorSensor _sensor;
 
