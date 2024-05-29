@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Utils;
 import com.qualcomm.hardware.adafruit.AdafruitI2cColorSensor;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -30,6 +31,7 @@ public class Devices {
 
     public static List<LynxModule> Hubs;
     public static VoltageSensor VoltageSensor;
+    public static DigitalChannel StartButton;
 
 
     public static void Init(HardwareMap map){
@@ -59,6 +61,8 @@ public class Devices {
         Hubs = map.getAll(LynxModule.class);
 
         VoltageSensor = map.get(VoltageSensor.class, "Control Hub");
+
+        StartButton = map.get(DigitalChannel.class, "startButton");
 
         _hardwareDevices = map;
     }

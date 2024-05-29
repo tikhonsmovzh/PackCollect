@@ -15,9 +15,8 @@ import org.firstinspires.ftc.teamcode.Utils.Color.ColorSensor;
 import org.firstinspires.ftc.teamcode.Utils.Configs.Configs;
 import org.firstinspires.ftc.teamcode.Utils.Devices;
 import org.firstinspires.ftc.teamcode.Utils.Events.Event;
-import org.firstinspires.ftc.teamcode.Utils.GameData;
+import org.firstinspires.ftc.teamcode.GameManagment.GameData;
 import org.firstinspires.ftc.teamcode.Utils.PID.PIDF;
-import org.firstinspires.ftc.teamcode.Utils.StaticTelemetry;
 import org.firstinspires.ftc.teamcode.Utils.Timers.Timer;
 
 @Module
@@ -91,13 +90,15 @@ public class Intake implements IRobotModule {
         }
 
         if (_puckDetectDelay.seconds() > Configs.Intake.PuckDetectDelaySec) {
-            if (_puckSensor.getColor().equals(new Color(Configs.Intake.RRedPuck, Configs.Intake.GRedPuck, Configs.Intake.BRedPuck), Configs.Intake.PuckDetectSensitivity)) {
+            Color type = GetColorType(_puckSensor.getColor(), Configs.Intake.PuckDetectSensitivity);
+
+            if(type.equals(GameData.StartPosition.Color)) {
                 _targetSeparatorPosition += Configs.Intake.Shift;
                 _puckDetectDelay.reset();
                 _redCounter++;
 
                 puckEatEvent.Invoke(new PuckEatEvent(Color.RED, _redCounter));
-            } else if (_puckSensor.getColor().equals(new Color(Configs.Intake.RBluePuck, Configs.Intake.GBluePuck, Configs.Intake.BBluePuck), Configs.Intake.PuckDetectSensitivity)) {
+            } else if(type.equals(GameData.StartPosition.Color.equals(Color.RED) ? Color.BLUE : Color.RED)) {
                 _targetSeparatorPosition -= Configs.Intake.Shift;
                 _puckDetectDelay.reset();
                 _blueCounter++;
@@ -106,18 +107,14 @@ public class Intake implements IRobotModule {
             }
         }
 
-        Color floorColor = GameData.StartPosition == StartRobotPosition.RED ?
-                new Color(Configs.Intake.RRedFloor, Configs.Intake.GRedFloor, Configs.Intake.BRedFloor) :
-                new Color(Configs.Intake.RBlueFloor, Configs.Intake.GBlueFloor, Configs.Intake.BBlueFloor);
+        Color floorType = GetColorType(_floorSensor.getColor(), Configs.Intake.FloorDetectSensitivity);
 
-        if (_floorSensor.getColor().equals(floorColor, Configs.Intake.FloorDetectSensitivity))
+        if (floorType.equals(GameData.StartPosition.Color))
             _clampServo.setPosition(Configs.Intake.ClampRealise);
         else
             _clampServo.setPosition(Configs.Intake.ClampClamped);
 
-        StaticTelemetry.AddVal("amp", _brushesMotor.getCurrent(CurrentUnit.AMPS));
-
-        /*if (_brushesMotor.getCurrent(CurrentUnit.AMPS) > Configs.Intake.BrushCurrentDefend && !_brushReversTimer.IsActive()) {
+        if (_brushesMotor.getCurrent(CurrentUnit.AMPS) > Configs.Intake.BrushCurrentDefend && !_brushReversTimer.IsActive()) {
             _brushesMotor.setPower(-Configs.Intake.BrushPower);
 
             _brushReversTimer.Start(Configs.Intake.BrushDefendReverseTime, () -> {
@@ -125,11 +122,22 @@ public class Intake implements IRobotModule {
                 _brushReversTimer.Start(Configs.Intake.DefendReversDelay, () -> {
                 });
             });
-        }*/
+        }
+    }
+
+
+    public static Color GetColorType(Color color, int sensitivity){
+        if(color.R - Math.max(color.G, color.B) > sensitivity)
+            return Color.RED;
+
+        if(color.B - Math.max(color.G, color.R) > sensitivity)
+            return Color.BLUE;
+
+        return Color.WHITE;
     }
 
     @Override
     public void Start() {
-        //_brushesMotor.setPower(Configs.Intake.BrushPower);
+        _brushesMotor.setPower(Configs.Intake.BrushPower);
     }
 }

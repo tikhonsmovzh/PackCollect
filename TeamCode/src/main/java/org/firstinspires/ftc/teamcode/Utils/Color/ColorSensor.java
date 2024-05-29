@@ -23,7 +23,7 @@ public class ColorSensor implements IHandlered {
 
     private AdafruitI2cColorSensor _sensor;
 
-    public ColorSensor(AdafruitI2cColorSensor sensor) {
+    public ColorSensor(AdafruitI2cColorSensor sensor, boolean addToUpdate){
         _sensor = sensor;
 
         try {
@@ -37,11 +37,11 @@ public class ColorSensor implements IHandlered {
 
             try {
                 paramField.set(_sensor, parameters);
-
-                _sensor.initialize();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+
+            _sensor.initialize();
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("color sensor hack not successful");
         }
@@ -51,7 +51,12 @@ public class ColorSensor implements IHandlered {
             ((SwitchableLight) _sensor).enableLight(true);
         }
 
-        UpdateHandler.AddHandlered(this);
+        if(addToUpdate)
+            UpdateHandler.AddHandlered(this);
+    }
+
+    public ColorSensor(AdafruitI2cColorSensor sensor) {
+        this(sensor, true);
     }
 
     @Override
