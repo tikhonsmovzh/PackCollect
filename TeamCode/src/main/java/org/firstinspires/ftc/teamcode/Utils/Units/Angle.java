@@ -37,7 +37,7 @@ public class Angle {
     }
     
     private Angle(double a){
-        _radianAngle = a;
+        _radianAngle = ChopAngle(a);
     }
 
     public static double ChopAngle(double angle){

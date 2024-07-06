@@ -25,7 +25,7 @@ public class BaseCollector {
     public LinearOpMode Robot;
     public ElapsedTime Time;
 
-    private static ArrayList<Class<? extends IRobotModule>> _annotatedClass;
+    private static ArrayList<Class<?>> _annotatedClass;
 
     private UpdateHandler _updateHandler;
 
@@ -53,7 +53,7 @@ public class BaseCollector {
 
     private static ArrayList<Class<?>> _classes;
 
-    public static ArrayList<Class<? extends IRobotModule>> GetAnnotatedClasses(Class<? extends Annotation> annotation) {
+    public static ArrayList<Class<?>> GetAnnotatedClasses(Class<? extends Annotation> annotation) {
         if (_classes == null) {
             List<String> classNames;
 
@@ -68,7 +68,7 @@ public class BaseCollector {
             _classes = new ArrayList<>();
 
             for (String i : classNames) {
-                if (!i.contains("team18742"))
+                if (!i.contains("teamcode"))
                     continue;
 
                 try {
@@ -90,11 +90,11 @@ public class BaseCollector {
             }
         }
 
-        ArrayList<Class<? extends IRobotModule>> result = new ArrayList<>();
+        ArrayList<Class<?>> result = new ArrayList<>();
 
         for (Class<?> i : _classes)
-            if (i.isAnnotationPresent(annotation) && i.equals(IRobotModule.class)) {
-                result.add((Class<? extends IRobotModule>) i);
+            if (i.isAnnotationPresent(annotation)) {
+                result.add(i);
             }
 
         return result;
@@ -118,8 +118,8 @@ public class BaseCollector {
         _updateHandler.Stop();
     }
 
-    protected void AddAdditionModules(ArrayList<Class<? extends IRobotModule>> modules) {
-        for (Class<? extends IRobotModule> i : modules) {
+    protected void AddAdditionModules(ArrayList<Class<?>> modules) {
+        for (Class<?> i : modules) {
             if(!_modules.containsKey(i))
                 InitOne(i);
         }
@@ -165,7 +165,7 @@ public class BaseCollector {
         throw new RuntimeException("not found " + type.getName() + " module");
     }
 
-    public void InitOne(Class<? extends IRobotModule> clazz){
+    public void InitOne(Class<?> clazz){
         IRobotModule inst = Instance(clazz);
 
         _modules.put(clazz, inst);

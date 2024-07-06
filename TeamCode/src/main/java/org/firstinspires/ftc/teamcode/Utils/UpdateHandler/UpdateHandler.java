@@ -16,10 +16,12 @@ public class UpdateHandler {
 
     public void Start(){
         for (IHandlered i : _hadlers)
-            i.Start();
+            if(i != null)
+                i.Start();
 
         for (IHandlered i : _hadlers)
-            i.LateStart();
+            if(i != null)
+                i.LateStart();
     }
 
     public void Update(){

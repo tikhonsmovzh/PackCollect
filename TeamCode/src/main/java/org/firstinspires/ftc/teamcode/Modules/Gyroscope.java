@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Utils.StaticTelemetry;
 @Module
 public class Gyroscope implements IRobotModule {
     private IMU _imu;
-    private Angle _rotate, _startRotateRadian;
+    private Angle _rotate = Angle.ofDegree(0), _startRotateRadian = Angle.ofDegree(0);
 
 
     @Override
@@ -28,6 +28,7 @@ public class Gyroscope implements IRobotModule {
     @Override
     public void Start() {
         Reset();
+        Update();
     }
 
     public Angle GetAngle() {

@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Utils.Devices;
 import org.firstinspires.ftc.teamcode.Utils.Events.Event;
 import org.firstinspires.ftc.teamcode.GameManagement.GameData;
 import org.firstinspires.ftc.teamcode.Utils.PID.PIDF;
+import org.firstinspires.ftc.teamcode.Utils.StaticTelemetry;
 import org.firstinspires.ftc.teamcode.Utils.Timers.Timer;
 
 @Module
@@ -79,17 +80,27 @@ public class Intake implements IRobotModule {
     public void Update() {
         _posPid.UpdateCoefs(Configs.Intake.SeparatorP, Configs.Intake.SeparatorI, Configs.Intake.SeparatorD);
 
-
         if (_thresholdTimer.seconds() > Configs.Intake.ReversTimeSec) {
             _separatorMotor.setPower(_posPid.Update((double) _separatorMotor.getCurrentPosition() - _targetSeparatorPosition));
 
-            if (_separatorMotor.getCurrent(CurrentUnit.AMPS) > Configs.Intake.ThresholdAmps && _thresholdTimer.seconds() > Configs.Intake.DefendReversDelay + Configs.Intake.ReversTimeSec ) {
-                _separatorMotor.setPower(-Math.signum(_posPid.Err));
+            if (_separatorMotor.getCurrent(CurrentUnit.AMPS) > Configs.Intake.ThresholdAmps && _thresholdTimer.seconds() > Configs.Intake.DefendReversDelay + Configs.Intake.ReversTimeSec && Math.abs(_posPid.Err) > 25) {
+                _separatorMotor.setPower(-Math.signum(_posPid.Err) * 0.75);
                 _thresholdTimer.reset();
             }
         }
 
-        if (_puckDetectDelay.seconds() > Configs.Intake.PuckDetectDelaySec) {
+        Color floorType = GetColorType(_floorSensor.getColor(), Configs.Intake.FloorDetectSensitivity);
+
+        boolean clamp = false;
+
+        if (floorType.equals(GameData.StartPosition.Color)) {
+            _clampServo.setPosition(Configs.Intake.ClampRealise);
+            clamp = true;
+        }
+        else
+            _clampServo.setPosition(Configs.Intake.ClampClamped);
+
+        if (_puckDetectDelay.seconds() > Configs.Intake.PuckDetectDelaySec && !clamp) {
             Color type = GetColorType(_puckSensor.getColor(), Configs.Intake.PuckDetectSensitivity);
 
             boolean detectet = false;
@@ -117,13 +128,6 @@ public class Intake implements IRobotModule {
                     _targetSeparatorPosition -= Configs.Intake.Shift;
             }
         }
-
-        Color floorType = GetColorType(_floorSensor.getColor(), Configs.Intake.FloorDetectSensitivity);
-
-        if (floorType.equals(GameData.StartPosition.Color))
-            _clampServo.setPosition(Configs.Intake.ClampRealise);
-        else
-            _clampServo.setPosition(Configs.Intake.ClampClamped);
 
         if (_brushesMotor.getCurrent(CurrentUnit.AMPS) > Configs.Intake.BrushCurrentDefend && !_brushReversTimer.IsActive()) {
             _brushesMotor.setPower(-Configs.Intake.BrushPower);

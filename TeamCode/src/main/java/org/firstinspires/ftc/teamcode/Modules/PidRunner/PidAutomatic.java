@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Modules.Gyroscope;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.Manager.Module;
 import org.firstinspires.ftc.teamcode.Modules.Odometry;
+import org.firstinspires.ftc.teamcode.Utils.StaticTelemetry;
 import org.firstinspires.ftc.teamcode.Utils.Units.Angle;
 import org.firstinspires.ftc.teamcode.Utils.Battery;
 import org.firstinspires.ftc.teamcode.Utils.Configs.Configs;
@@ -17,75 +18,71 @@ import org.firstinspires.ftc.teamcode.Utils.Units.Vector2;
 
 @Module
 public class PidAutomatic implements IRobotModule {
-    private Odometry _odometry;
     private Gyroscope _gyro;
     private Drivetrain _driverTrain;
+    private Angle _targetAngle;
+    private boolean _isRotate = false;
 
     @Override
     public void Init(BaseCollector collector) {
-        _odometry = collector.GetModule(Odometry.class);
         _gyro = collector.GetModule(Gyroscope.class);
         _driverTrain = collector.GetModule(Drivetrain.class);
     }
 
     public void SetSpeed(double speed) {
         _PIDFTurn.SrtLimitU(speed);
-        _PIDFForward.SrtLimitU(speed);
     }
 
-    private final PIDF _PIDFForward = new PIDF(Configs.AutomaticForwardPid.PidForwardP, Configs.AutomaticForwardPid.PidForwardI, Configs.AutomaticForwardPid.PidForwardD, Configs.DriveTrainWheels.speed, 1);
     private final PIDF _PIDFTurn = new PIDF(Configs.AutomaticRotatePid.PidRotateP, Configs.AutomaticRotatePid.PidRotateI, Configs.AutomaticRotatePid.PidRotateD, Configs.DriveTrainWheels.speed, 1);
 
-    public void Move(Vector2 moved) {
-        MoveToPoint(Vector2.Plus(moved, _targetPosition));
+    public void Drive(double speed, double rotate){
+        _isRotate = false;
+        _driverTrain.Drive(speed, rotate);
     }
 
-    private double _targetAngle = 0;
+    public void RotateTo(Angle angle){
+        _isRotate = true;
+        _targetAngle = angle;
 
-    public void TurnTo(Angle angle){
-        _targetAngle = angle.getRadian();
+        _PIDFTurn.Reset();
+        _PIDFTurn.Update(Angle.Minus(_gyro.GetAngle(), angle).getRadian());
     }
 
-    public void Turn(Angle angle){
-        _targetAngle = Angle.Plus(Angle.ofRadian(_targetAngle), angle).getRadian();
-    }
+    public void Rotate(Angle angle){
+        _isRotate = true;
 
-    public void MoveToPoint(Vector2 moved) {
-        _targetPosition = moved;
+        _targetAngle = Angle.Plus(angle, _targetAngle == null ? Angle.ofDegree(0) : _targetAngle);
 
-        Vector2 err = Vector2.Minus(_targetPosition, _odometry.Position);
-
-        _targetAngle = Math.atan2(err.Y, err.X);
-
-        _PIDFForward.Reset();
-
-        _PIDFForward.Update(err.Abs());
-    }
-
-    private Vector2 _targetPosition = new Vector2();
-
-    public boolean isMovedEnd() {
-        return Math.abs(_PIDFForward.Err) < 10d && Math.abs(_PIDFTurn.Err) < PI / 10;
+        _PIDFTurn.Reset();
+        _PIDFTurn.Update(Angle.Minus(_gyro.GetAngle(), _targetAngle).getRadian());
     }
 
     @Override
     public void Update() {
-        _PIDFForward.UpdateCoefs(Configs.AutomaticForwardPid.PidForwardP, Configs.AutomaticForwardPid.PidForwardI, Configs.AutomaticForwardPid.PidForwardD);
         _PIDFTurn.UpdateCoefs(Configs.AutomaticRotatePid.PidRotateP, Configs.AutomaticRotatePid.PidRotateI, Configs.AutomaticRotatePid.PidRotateD);
 
-        if (Configs.GeneralSettings.IsAutonomEnable) {
-            Vector2 dif = Vector2.Minus(_targetPosition, _odometry.Position);
-            double len = dif.Abs();
+        if(_targetAngle != null)
+            StaticTelemetry.AddLine("target = " + _targetAngle.getDegree());
 
-            _driverTrain.Drive(
-                    Math.abs(_PIDFTurn.Err) < Configs.Automatic.TurnSensitivity || (len < Configs.Automatic.LengthSensitivity && Math.abs(_PIDFTurn.Err) < Configs.Automatic.TurnSensitivity + PI) ? _PIDFForward.Update(len) / Battery.ChargeDelta : 0,
-                    _PIDFTurn.Update(Angle.ChopAngle(_gyro.GetAngle().getRadian() - _targetAngle)) / Battery.ChargeDelta);
+        if(!_isRotate)
+            return;
+
+        if(Math.abs(_PIDFTurn.Err) < Configs.Automatic.TurnSensitivity) {
+            _isRotate = false;
+            Drive(_rotatableForwardSpeed, 0);
+            return;
         }
+
+        _driverTrain.Drive(_rotatableForwardSpeed, _PIDFTurn.Update(Angle.Minus(_gyro.GetAngle(), _targetAngle).getRadian()));
     }
 
-    @Override
-    public void Start() {
-        _PIDFForward.Start();
-        _PIDFTurn.Start();
+    private double _rotatableForwardSpeed = 0;
+
+    public void RotatableForwardSpeed(double speed){
+        _rotatableForwardSpeed = speed;
+    }
+
+    public boolean isMovedEnd(){
+        return !_isRotate;
     }
 }

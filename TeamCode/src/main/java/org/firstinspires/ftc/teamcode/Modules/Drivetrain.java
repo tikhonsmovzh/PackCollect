@@ -26,8 +26,8 @@ public class Drivetrain implements IRobotModule {
     }
 
     public void Drive(double speed, double rotate) {
-        _leftDrive.setPower(speed - rotate);
-        _rightDrive.setPower(speed + rotate);
+        _leftDrive.setPower(speed + rotate);
+        _rightDrive.setPower(speed - rotate);
     }
 
     @Override

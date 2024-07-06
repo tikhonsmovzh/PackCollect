@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Modules.Camera;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
@@ -21,7 +22,7 @@ public class VisionPortalHandler implements IRobotModule {
     public void Init(BaseCollector collector){
         _processor = new PuckDetections();
 
-        _visualPortal = new VisionPortal.Builder().setCamera(Devices.Camera).addProcessor((VisionProcessor) _processor).build();
+        _visualPortal = new VisionPortal.Builder().setCamera(BuiltinCameraDirection.BACK).addProcessor((VisionProcessor) _processor).build();
 
         if(Configs.GeneralSettings.TelemetryOn)
             FtcDashboard.getInstance().startCameraStream(_processor, 10);

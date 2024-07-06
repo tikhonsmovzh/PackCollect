@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.Tests.Modules;
 
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.Modules.Camera.VisionPortalHandler;
+import org.firstinspires.ftc.teamcode.Modules.Intake;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.PidRunner.EndState.AutomaticStates;
+import org.firstinspires.ftc.teamcode.Modules.PidRunner.EndState.PuckDetectState;
 import org.firstinspires.ftc.teamcode.Modules.PidRunner.EndState.PuckRunState;
 import org.firstinspires.ftc.teamcode.Modules.PidRunner.PidAutomatic;
 
@@ -12,17 +14,20 @@ public class PuckDetectorTest implements IRobotModule {
 
     @Override
     public void Init(BaseCollector collector) {
-        _action = new PuckRunState();
+        //collector.GetModule(Intake.class);
+
+        _action = new PuckDetectState();
         _action.Init(collector);
     }
 
     @Override
-    public void Start() {
+    public void LateStart() {
         _action.Start();
     }
 
     @Override
-    public void Update() {
-        _action.Update();
+    public void LateUpdate() {
+        if(!_action.IsEnd())
+            _action.Update();
     }
 }

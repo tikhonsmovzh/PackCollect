@@ -31,7 +31,7 @@ public class Devices {
 
     public static List<LynxModule> Hubs;
     public static VoltageSensor VoltageSensor;
-    public static DigitalChannel StartButton;
+    public static DigitalChannel StartButton, RightRightButton, RightLeftButton, LeftRightButton, LeftLeftButton;
 
 
     public static void Init(HardwareMap map){
@@ -48,7 +48,7 @@ public class Devices {
 
         SeparatorMotor = map.get(DcMotorEx.class, "separatorMotor");
 
-        //Camera = map.get(WebcamName.class, "Webcam 1");
+        Camera = map.get(WebcamName.class, "Webcam 1");
 
         IMU = map.get(IMU.class, "imu");
 
@@ -63,6 +63,12 @@ public class Devices {
         VoltageSensor = map.get(VoltageSensor.class, "Control Hub");
 
         StartButton = map.get(DigitalChannel.class, "startButton");
+
+        RightLeftButton = map.get(DigitalChannel.class, "rightLeftButton");
+        RightRightButton = map.get(DigitalChannel.class, "rightRightButton");
+
+        LeftRightButton = map.get(DigitalChannel.class, "leftRightButton");
+        LeftLeftButton = map.get(DigitalChannel.class, "leftLeftButton");
 
         _hardwareDevices = map;
     }
