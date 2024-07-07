@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode.Modules.PidRunner.EndState;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
-import org.firstinspires.ftc.teamcode.GameManagement.GameData;
-import org.firstinspires.ftc.teamcode.GameManagement.StartRobotPosition;
+import org.firstinspires.ftc.teamcode.GameManagment.GameData;
+import org.firstinspires.ftc.teamcode.GameManagment.StartRobotPosition;
 import org.firstinspires.ftc.teamcode.Modules.Camera.VisionPortalHandler;
 import org.firstinspires.ftc.teamcode.Modules.Gyroscope;
 import org.firstinspires.ftc.teamcode.Modules.PidRunner.PidAutomatic;

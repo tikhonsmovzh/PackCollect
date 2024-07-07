@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.Utils.Color.ColorSensor;
 import org.firstinspires.ftc.teamcode.Utils.Configs.Configs;
 import org.firstinspires.ftc.teamcode.Utils.Devices;
 import org.firstinspires.ftc.teamcode.Utils.Events.Event;
-import org.firstinspires.ftc.teamcode.GameManagement.GameData;
+import org.firstinspires.ftc.teamcode.GameManagment.GameData;
 import org.firstinspires.ftc.teamcode.Utils.PID.PIDF;
 import org.firstinspires.ftc.teamcode.Utils.StaticTelemetry;
 import org.firstinspires.ftc.teamcode.Utils.Timers.Timer;

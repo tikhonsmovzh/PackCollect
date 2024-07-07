@@ -71,9 +71,7 @@ public class Configs {
 
     @Config
     public static class Camera{
-        public static int ImgSizeY = 165;
-
-        public static int ksize = 1;
+        public static int ksize = 2;
 
         public static double hRedDown = 120;
         public static double cRedDown = 70;
@@ -82,12 +80,18 @@ public class Configs {
         public static double cRedUp = 255;
         public static double vRedUp = 255;
 
-        public static double hBlueDown = 100;
-        public static double cBlueDown = 145;
-        public static double vBlueDowm = 40;
-        public static double hBlueUp = 115;
+        public static double hBlueDown = 103;
+        public static double cBlueDown = 105;
+        public static double vBlueDowm = 80;
+        public static double hBlueUp = 109;
         public static double cBlueUp = 255;
-        public static double vBlueUp = 190;
+        public static double vBlueUp = 150;
+
+        public static double CompressionCoef = 0.15;
+
+        public static double MinSimilarity = -999999, MaxSimilarity = 999999;
+
+        public static int ThreadCount = 7, ImgSizeY = 180;
     }
 
     @Config

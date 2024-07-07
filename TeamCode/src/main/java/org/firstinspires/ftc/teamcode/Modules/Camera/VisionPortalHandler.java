@@ -53,6 +53,8 @@ public class VisionPortalHandler implements IRobotModule {
         return _processor.BlueConcentrationPos.get();
     }
 
+    public double GetBluePerc(){return _processor.BluePercent.get();}
+
     public boolean IsCameraOpened(){
         return _visualPortal.getCameraState() == VisionPortal.CameraState.CAMERA_DEVICE_READY;
     }

@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Collectors.AutonomCollector;
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
-import org.firstinspires.ftc.teamcode.GameManagement.StartRobotPosition;
-import org.firstinspires.ftc.teamcode.GameManagement.GameData;
+import org.firstinspires.ftc.teamcode.GameManagment.GameData;
+import org.firstinspires.ftc.teamcode.GameManagment.StartRobotPosition;
 
 @TeleOp
 public class AutoOpModeBlue extends LinearOpModeBase {
