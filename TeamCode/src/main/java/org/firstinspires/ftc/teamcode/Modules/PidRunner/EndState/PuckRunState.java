@@ -4,8 +4,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
-import org.firstinspires.ftc.teamcode.GameManagement.GameData;
-import org.firstinspires.ftc.teamcode.GameManagement.StartRobotPosition;
+import org.firstinspires.ftc.teamcode.GameManagment.GameData;
+import org.firstinspires.ftc.teamcode.GameManagment.StartRobotPosition;
 import org.firstinspires.ftc.teamcode.Modules.Camera.VisionPortalHandler;
 import org.firstinspires.ftc.teamcode.Modules.Gyroscope;
 import org.firstinspires.ftc.teamcode.Modules.PidRunner.PidAutomatic;
@@ -21,6 +21,7 @@ public class PuckRunState implements AutomaticStates.IRouteAction {
     private double _oldCenter = 0;
 
     private boolean _isEnd = false;
+    private ElapsedTime _timer = new ElapsedTime();
 
     @Override
     public void Init(BaseCollector collector) {
@@ -31,6 +32,7 @@ public class PuckRunState implements AutomaticStates.IRouteAction {
 
     @Override
     public void Start() {
+        _timer.reset();
     }
 
     @Override
@@ -38,7 +40,7 @@ public class PuckRunState implements AutomaticStates.IRouteAction {
         if(_isEnd)
             return;
 
-        double center = _cameraHandler.GetBlueConcentration().X;
+        double center = GameData.StartPosition == StartRobotPosition.BLUE ? _cameraHandler.GetBlueConcentration().X : _cameraHandler.GetRedConcentration().X;
 
         if (Math.abs(center) >= 280)
             center = -_oldCenter;
@@ -50,7 +52,7 @@ public class PuckRunState implements AutomaticStates.IRouteAction {
 
         StaticTelemetry.AddLine("pucks = " + _cameraHandler.GetBluePucks());
 
-        if(_cameraHandler.GetBluePucks() <= 30000 || _cameraHandler.GetBluePucks() > 600000)
+        if(_cameraHandler.GetBluePucks() <= 1 && _timer.seconds() > 5)
             _isEnd = true;
     }
 

@@ -15,12 +15,14 @@ public class ModuleTest extends LinearOpModeBase {
     protected BaseCollector GetCollector() {
         BaseCollector collector = new BaseCollector(this);
 
-        //collector.InitOne(Intake.class);
-        //collector.InitOne(PidAutomatic.class);
-        //collector.InitOne(PidRouteManager.class);
+        collector.InitOne(Intake.class);
+        //collector.InitOne(DriveTrainTest.class);
+        collector.InitOne(PidAutomatic.class);
+        collector.InitOne(PidRouteManager.class);
+
         //collector.InitOne(PuckDetectorTest.class);
 
-        collector.InitOne(CameraTest.class);
+        //collector.InitOne(CameraTest.class);
 
         return collector;
     }

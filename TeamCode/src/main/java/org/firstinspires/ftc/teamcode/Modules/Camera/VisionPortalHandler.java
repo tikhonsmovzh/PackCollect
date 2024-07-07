@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.Modules.Camera;
 
+import static org.firstinspires.ftc.vision.VisionPortal.CameraState.CAMERA_DEVICE_READY;
+import static org.firstinspires.ftc.vision.VisionPortal.CameraState.STREAMING;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
@@ -22,10 +25,12 @@ public class VisionPortalHandler implements IRobotModule {
     public void Init(BaseCollector collector){
         _processor = new PuckDetections();
 
-        _visualPortal = new VisionPortal.Builder().setCamera(BuiltinCameraDirection.BACK).addProcessor((VisionProcessor) _processor).build();
+        _visualPortal = new VisionPortal.Builder().setCamera(Devices.Camera).addProcessor((VisionProcessor) _processor).build();
 
         if(Configs.GeneralSettings.TelemetryOn)
             FtcDashboard.getInstance().startCameraStream(_processor, 10);
+
+        while (_visualPortal.getCameraState() != STREAMING);
     }
 
     @Override
@@ -53,7 +58,8 @@ public class VisionPortalHandler implements IRobotModule {
         return _processor.BlueConcentrationPos.get();
     }
 
+
     public boolean IsCameraOpened(){
-        return _visualPortal.getCameraState() == VisionPortal.CameraState.CAMERA_DEVICE_READY;
+        return _visualPortal.getCameraState() == CAMERA_DEVICE_READY;
     }
 }

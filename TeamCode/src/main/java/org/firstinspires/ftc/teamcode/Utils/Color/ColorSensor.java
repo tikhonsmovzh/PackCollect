@@ -61,12 +61,7 @@ public class ColorSensor implements IHandlered {
 
     @Override
     public void Update() {
-        NormalizedRGBA color = _sensor.getNormalizedColors();
-
-        _color = new Color(
-                Range.clip((int) (color.red * Color.Scale), Color.Min, Color.Max),
-                Range.clip((int) (color.green * Color.Scale), Color.Min, Color.Max),
-                Range.clip((int) (color.blue * Color.Scale), Color.Min, Color.Max));
+        _color = new Color(_sensor.red(), _sensor.green(), _sensor.blue());
     }
 
     public Color getColor() {

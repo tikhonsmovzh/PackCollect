@@ -52,37 +52,45 @@ public class PidRouteManager implements IRobotModule {
     public void LateUpdate() {
         StaticTelemetry.AddLine("state = " + _currentState.name());
 
-        if((!_rightLeftButton.getState() || !_rightRightButton.getState()) && (!_leftLeftButton.getState() || !_leftRightButton.getState())){
+        if ((!_rightLeftButton.getState() || !_rightRightButton.getState()) && (!_leftLeftButton.getState() || !_leftRightButton.getState())) {
             _isDefended = true;
 
             _runner.Drive(0.5, 0);
 
-            _defendTimer.Start(Configs.Automatic.DefendTime, ()->_isDefended = false);
+            _defendTimer.Start(Configs.Automatic.DefendTime, () -> {
+                _isDefended = false;
+                _runner.Drive(0, 0);
+            });
         }
 
-        if(!_leftLeftButton.getState() || !_leftRightButton.getState()){
+        if (!_leftLeftButton.getState() || !_leftRightButton.getState()) {
             _isDefended = true;
 
             _runner.Drive(0.2, -0.5);
 
-            _defendTimer.Start(Configs.Automatic.DefendTime, ()->_isDefended = false);
+            _defendTimer.Start(Configs.Automatic.DefendTime, () -> {
+                _isDefended = false;
+                _runner.Drive(0, 0);
+            });
         }
 
-        if(!_rightLeftButton.getState() || !_rightRightButton.getState()){
+        if (!_rightLeftButton.getState() || !_rightRightButton.getState()) {
             _isDefended = true;
 
             _runner.Drive(0.2, 0.5);
 
-            _defendTimer.Start(Configs.Automatic.DefendTime, ()->_isDefended = false);
+            _defendTimer.Start(Configs.Automatic.DefendTime, () -> {
+                _isDefended = false;
+                _runner.Drive(0, 0);
+            });
         }
 
-        if(_isDefended)
+        if (_isDefended)
             return;
 
         _currentStateAction.Update();
 
-        if (_currentStateAction.IsEnd() && _lastSwapTime.seconds() > Configs.Automatic.EndStateSwapDelay)
-        {
+        if (_currentStateAction.IsEnd() && _lastSwapTime.seconds() > Configs.Automatic.EndStateSwapDelay) {
             _lastSwapTime.reset();
 
             //if(_gameTime.seconds() > 90)
@@ -95,6 +103,7 @@ public class PidRouteManager implements IRobotModule {
 
                 case RUN_TO_PUCK:
                     SwapState(AutomaticStates.PUCK_DETECT);
+                    break;
             }
         }
     }

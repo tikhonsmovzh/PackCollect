@@ -51,14 +51,14 @@ public class Configs {
 
         public static int Shift = 240;
 
-        public static int PuckDetectSensitivity = 1, FloorDetectSensitivity = 1;
+        public static int PuckDetectSensitivity = 25, FloorDetectSensitivity = 25;
         public static double PuckDetectDelaySec = 0.3;
 
         public static double ThresholdAmps = 1.7, ReversTimeSec = 0.5;
 
-        public static double ClampClamped = 1, ClampRealise = 0.7;
+        public static double ClampClamped = 0.175, ClampRealise = 0;
 
-        public static double BrushCurrentDefend = 1.3, BrushDefendReverseTime = 2, BrushPower = 1;
+        public static double BrushCurrentDefend = 0.8, BrushDefendReverseTime = 2, BrushPower = 0.75;
 
         public static double DefendReversDelay = 0.6;
     }
@@ -66,38 +66,45 @@ public class Configs {
     @Config
     public static class Automatic{
         public static double TurnSensitivity = 0.1;
-        public static double EndStateSwapDelay = 1, DefendTime = 0.5;
+        public static double EndStateSwapDelay = 0.5, DefendTime = 0.5;
     }
 
     @Config
     public static class Camera{
-        public static int ImgSizeY = 165;
+        public static int ksize = 6;
 
-        public static int ksize = 1;
-
-        public static double hRedDown = 120;
-        public static double cRedDown = 70;
-        public static double vRedDowm = 50;
-        public static double hRedUp = 200;
+        public static double hRedDown = 168;
+        public static double cRedDown = 105;
+        public static double vRedDowm = 25;
+        public static double hRedUp = 179;
         public static double cRedUp = 255;
-        public static double vRedUp = 255;
+        public static double vRedUp = 80;
 
-        public static double hBlueDown = 100;
-        public static double cBlueDown = 145;
-        public static double vBlueDowm = 40;
-        public static double hBlueUp = 115;
+        public static double hBlueDown = 103;
+        public static double cBlueDown = 105;
+        public static double vBlueDowm = 80;
+        public static double hBlueUp = 106;
         public static double cBlueUp = 255;
-        public static double vBlueUp = 190;
+        public static double vBlueUp = 150;
+
+        public static double CompressionCoef = 0.15;
+
+        public static double MinBlueSimilarity = -1000, MaxBlueSimilarity = 1000;
+        public static double MinRedSimilarity = -5000, MaxRedSimilarity = 5000;
+
+        public static int ThreadCount = 7, ImgSizeY = 210;
     }
 
     @Config
     public static class PuckRunState{
-        public static double CameraP = 0.095, speed = -0.4;
+        public static double CameraP = 0.095, speed = -0.9;
     }
 
     @Config
     public static class PuckDetectState{
-        public static int StepRot = 2;
-        public static int Range = 45;
+        public static int StepRot = 8;
+        public static int Range = 180;
+
+        public static double DetectTimeSec = 0.03;
     }
 }
