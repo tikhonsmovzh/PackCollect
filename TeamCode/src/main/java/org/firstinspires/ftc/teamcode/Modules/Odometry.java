@@ -44,18 +44,6 @@ public class Odometry implements IRobotModule {
         _odometerXLeft.Start();
     }
 
-    public double GetSpeedOdometerXLeft() {
-        return _odometerXLeft.GetVelocity();
-    }
-
-    public double GetSpeedOdometerXRight() {
-        return -_odometerXRight.GetVelocity();
-    }
-
-    public double GetSpeedOdometerY() {
-        return _odometerY.GetVelocity();
-    }
-
     public double GetOdometerXLeft() {
         return _odometerXLeft.GetPosition();
     }
@@ -80,14 +68,13 @@ public class Odometry implements IRobotModule {
         _odometerXRight.Update();
         _odometerXLeft.Update();
 
-        double odometrXLeft = GetOdometerXLeft(), odometrY = GetOdometerY(), odometrXRight = GetOdometerXRight();
-        double odometrSpeedXLeft = GetSpeedOdometerXLeft(), odometrSpeedY = GetSpeedOdometerY(), odometrSpeedXRight = GetSpeedOdometerXRight();
+        double odometerXLeft = GetOdometerXLeft(), odometrY = GetOdometerY(), odometrXRight = GetOdometerXRight();
 
-        double deltaX = (odometrXLeft - _oldOdometrXLeft + odometrXRight - _oldOdometrXRight) / 2;
+        double deltaX = (odometerXLeft - _oldOdometrXLeft + odometrXRight - _oldOdometrXRight) / 2;
 
         double deltaY = (odometrY - _oldOdometrY) - Configs.Odometry.RadiusOdometrY * Angle.Minus(_gyro.GetAngle(), _oldRotate).getRadian();
 
-        _oldOdometrXLeft = odometrXLeft;
+        _oldOdometrXLeft = odometerXLeft;
         _oldOdometrXRight = odometrXRight;
         _oldOdometrY = odometrY;
 

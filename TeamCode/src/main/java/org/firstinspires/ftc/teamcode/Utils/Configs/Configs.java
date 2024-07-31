@@ -107,4 +107,11 @@ public class Configs {
 
         public static double DetectTimeSec = 0.03;
     }
+
+    @Config
+    public static  class Gyroscope{
+        public static boolean IsAllOdometer = false;
+        public static double MergerCoefSeconds = 0.7;
+        public static long Iterations = 10;
+    }
 }

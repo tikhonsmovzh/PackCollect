@@ -19,7 +19,6 @@ public class CameraTest implements IRobotModule {
                 "redPucks = " + _cameraHandler.GetRedPucks(),
                 "bluePucks = " + _cameraHandler.GetBluePucks(),
                 "redCenter = " + _cameraHandler.GetRedConcentration().X,
-                "blueCenter = " + _cameraHandler.GetBlueConcentration().X,
-                "blue perc = " + _cameraHandler.GetBluePerc());
+                "blueCenter = " + _cameraHandler.GetBlueConcentration().X);
     }
 }

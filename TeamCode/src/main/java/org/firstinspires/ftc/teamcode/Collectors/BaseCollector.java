@@ -172,8 +172,10 @@ public class BaseCollector {
 
         inst.Init(this);
 
-        if(_isStarted)
+        if(_isStarted) {
             inst.Start();
+            inst.LateStart();
+        }
     }
 
     public void AddSomeModules(Class<? extends IRobotModule>[] clazzes){
