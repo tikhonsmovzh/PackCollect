@@ -22,32 +22,22 @@ import org.firstinspires.ftc.teamcode.Utils.StaticTelemetry;
 public class Gyroscope implements IRobotModule {
     private IMU _imu;
     private Odometry _odometrs;
-    private final ElapsedTime _deltaTime = new ElapsedTime();
 
-    private double _oldRadians, _allRadians, _allDegree, _oldOdometer;
+    private double _allRadians, _oldOdometer;
 
     private static double _startRotateRadian;
-
-    private BaseCollector _collector;
 
     private long _iterations = 0;
     private ExponentialFilter _margeFilter = new ExponentialFilter(Configs.Gyroscope.MergerCoefSeconds);
 
     @Override
     public void Init(BaseCollector collector) {
-        _collector = collector;
-
         _imu = Devices.IMU;
-        _odometrs = collector.GetModule(Odometry.class);
+        //_odometrs = collector.GetModule(Odometry.class);
 
         _imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.UP)));
 
         Reset();
-    }
-
-    @Override
-    public void Start() {
-        _deltaTime.reset();
     }
 
     public Angle GetAngle() {
@@ -56,7 +46,9 @@ public class Gyroscope implements IRobotModule {
 
     @Override
     public void Update() {
-        _margeFilter.UpdateCoef(Configs.Gyroscope.MergerCoefSeconds);
+        _allRadians = ChopAngle(_imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS) - _startRotateRadian);
+
+        /*_margeFilter.UpdateCoef(Configs.Gyroscope.MergerCoefSeconds);
 
         if (Configs.GeneralSettings.IsUseOdometers) {
             double odometerTurn = ChopAngle(ChopAngle((-_odometrs.GetOdometerXLeft() / Configs.Odometry.RadiusOdometrXLeft + _odometrs.GetOdometerXRight() / Configs.Odometry.RadiusOdometrXRight) / 2));
@@ -76,20 +68,12 @@ public class Gyroscope implements IRobotModule {
 
         _allRadians = ChopAngle(_allRadians);
 
-        _iterations++;
-
-        _allDegree = toDegrees(_allRadians);
-
-        _oldRadians = _allRadians;
-
-        _deltaTime.reset();
+        _iterations++;*/
     }
 
     public void Reset() {
         _startRotateRadian = _imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
-        _margeFilter.Reset();
-
-        _oldRadians = 0;
+        //_margeFilter.Reset();
     }
 }
