@@ -30,7 +30,7 @@ public class PidAutomatic implements IRobotModule {
     }
 
     public void SetSpeed(double speed) {
-        _PIDFTurn.SrtLimitU(speed);
+        _PIDFTurn.SetLimitU(speed);
     }
 
     private final PIDF _PIDFTurn = new PIDF(Configs.AutomaticRotatePid.PidRotateP, Configs.AutomaticRotatePid.PidRotateI, Configs.AutomaticRotatePid.PidRotateD, Configs.DriveTrainWheels.speed, 1);

@@ -23,22 +23,26 @@ public class VisionPortalHandler implements IRobotModule {
 
     @Override
     public void Init(BaseCollector collector){
-        _processor = new PuckDetections();
+        if(Configs.GeneralSettings.IsUseCamera) {
+            _processor = new PuckDetections();
 
-        _visualPortal = new VisionPortal.Builder().setCamera(Devices.Camera).addProcessor((VisionProcessor) _processor).build();
+            _visualPortal = new VisionPortal.Builder().setCamera(Devices.Camera).addProcessor((VisionProcessor) _processor).build();
 
-        if(Configs.GeneralSettings.TelemetryOn)
-            FtcDashboard.getInstance().startCameraStream(_processor, 10);
+            if (Configs.GeneralSettings.TelemetryOn)
+                FtcDashboard.getInstance().startCameraStream(_processor, 10);
 
-        while (_visualPortal.getCameraState() != STREAMING);
+            while (_visualPortal.getCameraState() != STREAMING) ;
+        }
     }
 
     @Override
     public void Stop(){
-        while (_visualPortal.getCameraState() == VisionPortal.CameraState.OPENING_CAMERA_DEVICE);
+        if(Configs.GeneralSettings.IsUseCamera) {
+            while (_visualPortal.getCameraState() == VisionPortal.CameraState.OPENING_CAMERA_DEVICE) ;
 
-        _visualPortal.close();
-        FtcDashboard.getInstance().stopCameraStream();
+            _visualPortal.close();
+            FtcDashboard.getInstance().stopCameraStream();
+        }
     }
 
     public int GetRedPucks(){

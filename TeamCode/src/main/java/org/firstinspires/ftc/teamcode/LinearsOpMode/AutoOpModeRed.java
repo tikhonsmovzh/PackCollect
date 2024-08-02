@@ -12,6 +12,7 @@ public class AutoOpModeRed extends LinearOpModeBase {
     @Override
     protected BaseCollector GetCollector() {
         GameData.StartPosition = StartRobotPosition.RED;
+        IsStarted = true;
         return new AutonomCollector(this);
     }
 }

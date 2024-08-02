@@ -5,9 +5,8 @@ import com.acmerobotics.dashboard.config.Config;
 public class Configs {
     @Config
     public static class GeneralSettings {
-        public static boolean IsAutonomEnable = true;
-
         public static boolean IsUseOdometers = true;
+        public static boolean IsUseCamera = true;
 
         public static boolean IsCachinger = true;
 
@@ -113,5 +112,10 @@ public class Configs {
         public static boolean IsAllOdometer = false;
         public static double MergerCoefSeconds = 0.7;
         public static long Iterations = 10;
+    }
+
+    @Config
+    public static  class SonarDefend {
+        public static int TriggerDist = 100, DeadDist = 720;
     }
 }

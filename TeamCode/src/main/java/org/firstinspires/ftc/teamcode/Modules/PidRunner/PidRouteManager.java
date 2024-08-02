@@ -93,8 +93,8 @@ public class PidRouteManager implements IRobotModule {
         if (_currentStateAction.IsEnd() && _lastSwapTime.seconds() > Configs.Automatic.EndStateSwapDelay) {
             _lastSwapTime.reset();
 
-            //if(_gameTime.seconds() > 90)
-            //    SwapState(AutomaticStates.BACK_TO_HOME);
+            if(_gameTime.seconds() > 90)
+                SwapState(AutomaticStates.BACK_TO_HOME);
 
             switch (_currentState) {
                 case PUCK_DETECT:

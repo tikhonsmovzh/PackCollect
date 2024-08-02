@@ -4,8 +4,8 @@ import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 
 public enum AutomaticStates {
     PUCK_DETECT(PuckDetectState.class),
-    RUN_TO_PUCK(PuckRunState.class);
-    //BACK_TO_HOME();
+    RUN_TO_PUCK(PuckRunState.class),
+    BACK_TO_HOME(HomeBackState.class);
 
     private final Class<? extends IRouteAction> _actionClass;
 

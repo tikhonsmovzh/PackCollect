@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Utils.Configs.Configs;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class Devices {
     public static VoltageSensor VoltageSensor;
     public static DigitalChannel StartButton, RightRightButton, RightLeftButton, LeftRightButton, LeftLeftButton;
 
+    public static I2cSonar SonarLeft, SonarRight;
 
     public static void Init(HardwareMap map){
         if(_hardwareDevices != null)
@@ -48,7 +50,8 @@ public class Devices {
 
         SeparatorMotor = map.get(DcMotorEx.class, "separatorMotor");
 
-        Camera = map.get(WebcamName.class, "Webcam 1");
+        if(Configs.GeneralSettings.IsUseCamera)
+            Camera = map.get(WebcamName.class, "Webcam 1");
 
         IMU = map.get(IMU.class, "imu");
 
@@ -69,6 +72,9 @@ public class Devices {
 
         LeftRightButton = map.get(DigitalChannel.class, "leftRightButton");
         LeftLeftButton = map.get(DigitalChannel.class, "leftLeftButton");
+
+        SonarRight = map.get(I2cSonar.class, "sonarRight");
+        SonarRight = map.get(I2cSonar.class, "sonarLeft");
 
         _hardwareDevices = map;
     }

@@ -33,7 +33,7 @@ public class Gyroscope implements IRobotModule {
     @Override
     public void Init(BaseCollector collector) {
         _imu = Devices.IMU;
-        //_odometrs = collector.GetModule(Odometry.class);
+        _odometrs = collector.GetModule(Odometry.class);
 
         _imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.UP)));
 
@@ -46,9 +46,13 @@ public class Gyroscope implements IRobotModule {
 
     @Override
     public void Update() {
-        _allRadians = ChopAngle(_imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS) - _startRotateRadian);
+        if(!Configs.GeneralSettings.IsUseOdometers) {
+            _allRadians = ChopAngle(_imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS) - _startRotateRadian);
 
-        /*_margeFilter.UpdateCoef(Configs.Gyroscope.MergerCoefSeconds);
+            return;
+        }
+
+        _margeFilter.UpdateCoef(Configs.Gyroscope.MergerCoefSeconds);
 
         if (Configs.GeneralSettings.IsUseOdometers) {
             double odometerTurn = ChopAngle(ChopAngle((-_odometrs.GetOdometerXLeft() / Configs.Odometry.RadiusOdometrXLeft + _odometrs.GetOdometerXRight() / Configs.Odometry.RadiusOdometrXRight) / 2));
@@ -68,12 +72,12 @@ public class Gyroscope implements IRobotModule {
 
         _allRadians = ChopAngle(_allRadians);
 
-        _iterations++;*/
+        _iterations++;
     }
 
     public void Reset() {
         _startRotateRadian = _imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
-        //_margeFilter.Reset();
+        _margeFilter.Reset();
     }
 }

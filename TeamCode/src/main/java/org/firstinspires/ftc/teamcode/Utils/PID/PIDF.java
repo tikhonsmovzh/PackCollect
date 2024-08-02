@@ -90,7 +90,7 @@ public class PIDF implements IHandlered {
         return u;
     }
 
-    public void SrtLimitU(double u){
+    public void SetLimitU(double u){
         _limitU = u;
     }
 }

@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Collectors.BaseCollector;
 import org.firstinspires.ftc.teamcode.Modules.Manager.IRobotModule;
 import org.firstinspires.ftc.teamcode.Modules.Manager.Module;
+import org.firstinspires.ftc.teamcode.Utils.Battery;
 import org.firstinspires.ftc.teamcode.Utils.Color.Color;
 import org.firstinspires.ftc.teamcode.Utils.Color.ColorSensor;
 import org.firstinspires.ftc.teamcode.Utils.Configs.Configs;
@@ -52,7 +53,7 @@ public class Intake implements IRobotModule {
         _puckSensor = new ColorSensor(Devices.PuckSensor);
         _floorSensor = new ColorSensor(Devices.FloorSensor);
 
-        _separatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        _separatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         Reset();
 
         _clampServo = Devices.Clamp;
@@ -78,6 +79,8 @@ public class Intake implements IRobotModule {
 
     @Override
     public void Update() {
+        _posPid.SetLimitU(10d / Battery.Voltage);
+
         _posPid.UpdateCoefs(Configs.Intake.SeparatorP, Configs.Intake.SeparatorI, Configs.Intake.SeparatorD);
 
         if (_thresholdTimer.seconds() > Configs.Intake.ReversTimeSec) {

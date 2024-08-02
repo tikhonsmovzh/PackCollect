@@ -50,7 +50,12 @@ public class PuckDetectState implements AutomaticStates.IRouteAction {
         if(_isEnd || _detectTimer.seconds() < Configs.PuckDetectState.DetectTimeSec)
             return;
 
-        if(_random.nextInt() % 2 == 1) {
+        /*if(_random.nextInt() % 2 == 1) {
+            _runner.RotateTo(Angle.ofDegree(_random.nextDouble()));
+            _isEnd = true;
+            return;
+        }*/
+        if(!Configs.GeneralSettings.IsUseCamera){
             _runner.RotateTo(Angle.ofDegree(_random.nextDouble()));
             _isEnd = true;
             return;

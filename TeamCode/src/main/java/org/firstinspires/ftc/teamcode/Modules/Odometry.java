@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.Utils.Units.Vector2;
 
 @Module
 public class Odometry implements IRobotModule {
-    /*private EncoderControl _odometerY, _odometerXLeft, _odometerXRight;
+    private EncoderControl _odometerY, _odometerXLeft, _odometerXRight;
 
     private double _oldOdometrXLeft, _oldOdometrXRight, _oldOdometrY;
     public Vector2 Position = new Vector2(), ShiftPosition = new Vector2();
@@ -87,5 +87,5 @@ public class Odometry implements IRobotModule {
                         deltaY * cos(-_gyro.GetAngle().getRadian()));
 
         Position = Vector2.Plus(ShiftPosition, Position);
-    }*/
+    }
 }
